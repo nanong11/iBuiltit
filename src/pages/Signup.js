@@ -6,7 +6,7 @@ import { padding } from '@mui/system';
 const useStyles = makeStyles({
     form: {
         margin: "10rem auto auto",
-        width: "30rem",
+        width: "100%",
         padding: "2rem",
         display: "flex",
         flexDirection: "column",
@@ -15,7 +15,7 @@ const useStyles = makeStyles({
     gridItem: {
       border: "1px solid black",
       borderRadius: "10px",
-      padding: "1rem"
+      padding: "1rem",
     }
 })
 
@@ -42,11 +42,12 @@ export default function Signup() {
     <>
       <Grid 
       container
+      spacing={0}
       alignItems="center"
       justifyContent="center"
       sx={{ minHeight: '100vh' }}
       >
-        <Grid item className={classes.gridItem}>
+        <Grid item xs={10} sm={8} md={5} xl={3} className={classes.gridItem}>
           <FormControl
           className={classes.form}
           component="form"
