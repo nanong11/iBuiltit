@@ -4,7 +4,9 @@ import {
   Route,
 } from "react-router-dom";
 
-import AppNavBar from "./components/AppNavBar";
+import Home from "./pages/Home";
+import WithAppNavBar from "./components/WithAppNavBar";
+import WithoutAppNavBar from "./components/WithoutAppNavBar";
 import Signup from "./pages/Signup";
 
 
@@ -12,15 +14,16 @@ import Signup from "./pages/Signup";
 
 function App() {
   return (
-   <>
-    <BrowserRouter>
-      <AppNavBar />
-      <Routes>
-        <Route path="/signup" element={ <Signup/> }/>
-        
-      </Routes>
-    </BrowserRouter>
-   </>
+  <BrowserRouter>
+    <Routes>
+      <Route element={<WithoutAppNavBar />}>
+        <Route path="/signup" element={<Signup />} />
+      </Route>
+      <Route element={<WithAppNavBar />}>
+        <Route path="/" element={<Home />} />
+      </Route>
+    </Routes>
+  </BrowserRouter>
   );
 }
 
