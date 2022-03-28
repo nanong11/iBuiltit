@@ -5,6 +5,7 @@ import {
 } from "react-router-dom";
 
 import AppNavBar from "./components/AppNavBar";
+import Signup from "./pages/Signup";
 
 
 
@@ -15,6 +16,7 @@ function App() {
     <BrowserRouter>
       <AppNavBar />
       <Routes>
+        <Route path="/signup" element={ <Signup/> }/>
         
       </Routes>
     </BrowserRouter>
