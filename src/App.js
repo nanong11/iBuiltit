@@ -1,8 +1,23 @@
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+} from "react-router-dom";
+
+import AppNavBar from "./components/AppNavBar";
+
+
+
 
 function App() {
   return (
    <>
-   <h1>Hello World</h1>
+    <BrowserRouter>
+      <AppNavBar />
+      <Routes>
+        
+      </Routes>
+    </BrowserRouter>
    </>
   );
 }
