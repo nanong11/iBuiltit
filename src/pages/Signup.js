@@ -1,16 +1,18 @@
 import { Button, FormControl, Grid, TextField, Typography } from '@mui/material'
 import React, { useEffect, useState } from 'react'
-import { makeStyles } from '@material-ui/styles';
-import { padding } from '@mui/system';
+import { makeStyles } from '@material-ui/styles'
+import { useNavigate } from "react-router-dom"
 
+
+/* Custom Styles */
 const useStyles = makeStyles({
     form: {
-        margin: "10rem auto auto",
-        width: "100%",
-        padding: "2rem",
-        display: "flex",
-        flexDirection: "column",
-        gap: "1rem",
+      margin: "10rem auto auto",
+      width: "100%",
+      padding: "2rem",
+      display: "flex",
+      flexDirection: "column",
+      gap: "1rem",
     },
     gridItem: {
       border: "1px solid black",
@@ -19,24 +21,215 @@ const useStyles = makeStyles({
     }
 })
 
-export default function Signup() {
-    const [ firstName, setFirstName ] = useState("")
-    const [ lastName, setLastName ] = useState("")
-    const [ email, setEmail ] = useState("")
-    const [ password, setPasword ] = useState("")
-    const [ confirmPassword, setConfirmPassword ] = useState("")
-    const [ isDisabled, setIsDisabled ] = useState(true)
 
+export default function Signup() {
+    const navigate = useNavigate()
     const classes = useStyles()
 
+    const [ firstName, setFirstName ] = useState("")
+    const [ firstNameColor, setFirstNameColor ] = useState("")
+    const [ firstNameError, setFirstNameError ] = useState(false)
+    const [ firstNameErrorText, setFirstNameErrorText ] = useState("")
+    const [ firstNameFocused, setFirstNameFocused ] = useState(false)
+
+    const [ lastName, setLastName ] = useState("")
+    const [ lastNameColor, setLastNameColor ] = useState("")
+    const [ lastNameError, setLastNameError ] = useState(false)
+    const [ lastNameErrorText, setLastNameErrorText ] = useState("")
+    const [ lastNameFocused, setLastNameFocused ] = useState(false)
+
+    const [ email, setEmail ] = useState("")
+    const [ emailColor, setEmailColor ] = useState("")
+    const [ emailError, setEmailError ] = useState(false)
+    const [ emailErrorText, setEmailErrorText ] = useState("")
+    const [ emailFocused, setEmailFocused ] = useState(false)
+
+    const [ password, setPasword ] = useState("")
+    const [ passwordColor, setPasswordColor ] = useState("")
+    const [ passwordError, setPasswordError ] = useState(false)
+    const [ passwordErrorText, setPasswordErrorText ] = useState("")
+    const [ passwordFocused, setPasswordFocused ] = useState(false)
+
+    const [ confirmPassword, setConfirmPassword ] = useState("")
+    const [ confirmPasswordColor, setConfirmPasswordColor ] = useState("")
+    const [ confirmPasswordError, setConfirmPasswordError ] = useState(false)
+    const [ confirmPasswordErrorText, setConfirmPasswordErrorText ] = useState("")
+    const [ confirmPasswordFocused, setConfirmPasswordFocused ] = useState(false)
+    const [ confirmPasswordIsDisabled, setConfirmPasswordIsDisabled ] = useState(true)
+
+    const [ isDisabled, setIsDisabled ] = useState(true)
+
+    /* First Name Validation */
     useEffect(() => {
-      if(firstName !== "" && lastName !== "" && email !== "" && password !=="" && confirmPassword!== ""){
+      if(firstName.length > 0 && !/^[a-zA-Z\s]+$/.test(firstName)){
+        setFirstNameError(true)
+        setFirstNameErrorText("First Name should only consist of letters.")
+      }else if(firstName.length > 1 && /^[a-zA-Z\s]+$/.test(firstName)){
+        setFirstNameError(false)
+        setFirstNameColor("success")
+        setFirstNameErrorText("")
+        setFirstNameFocused(true)
+      }else if(firstName.length === 1){
+        setFirstNameError(true)
+      }else{
+        setFirstNameError(false)
+        setFirstNameColor("")
+        setFirstNameErrorText("")
+        setFirstNameFocused(false)
+      }
+    }, [firstName])
+
+    /* Last Name Validation */
+    useEffect(() => {
+      if(lastName.length > 0 && !/^[a-zA-Z\s]+$/.test(lastName)){
+        setLastNameError(true)
+        setLastNameErrorText("Last Name should only consist of letters.")
+      }else if(lastName.length > 1 && /^[a-zA-Z\s]+$/.test(lastName)){
+        setLastNameError(false)
+        setLastNameColor("success")
+        setLastNameErrorText("")
+        setLastNameFocused(true)
+      }else if(lastName.length === 1){
+        setLastNameError(true)
+      }else{
+        setLastNameError(false)
+        setLastNameColor("")
+        setLastNameErrorText("")
+        setLastNameFocused(false)
+      }
+    }, [lastName])
+
+    /* Email Validation */
+    useEffect(() => {
+      const validateEmail = (em) => {
+        const mailFormat = /^(([^<>()\]\\.,;:\s@"]+(\.[^<>()\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return mailFormat.test(String(em).toLowerCase())
+      }
+      if(email.length > 0 && validateEmail(email)){
+        setEmailErrorText("")
+        setEmailColor("")
+        fetch(`/api/users/check-email`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            email
+          })
+        })
+        .then(response => response.json())
+        .then(response => {
+          if(response){
+            setEmailError(true)
+            setEmailErrorText("Email already exist.")
+            setEmailFocused(false)
+          }else{
+            setEmailError(false)
+            setEmailColor(`success`)
+            setEmailFocused(true)
+          }
+          
+        })
+      }else if(email.length > 0 && validateEmail(email) === false){
+        setEmailColor("")
+        setEmailError(true)
+        setEmailErrorText("Please input valid email.")
+        setEmailFocused(false)
+      }else{
+        setEmailError(false)
+        setEmailErrorText("")
+        setEmailColor("")
+        setEmailFocused(false)
+      }
+      
+    }, [email])
+
+
+    /* Password Validation */
+    useEffect(() => {
+      if(password.length > 0 && password.length < 8){
+        setPasswordError(true)
+        setPasswordColor("")
+        setPasswordErrorText("Password should be 8 min characters.")
+        setConfirmPasswordIsDisabled(true)
+      }else if(password.length >= 8){
+        setPasswordError(false)
+        setPasswordColor("success")
+        setPasswordFocused(true)
+        setPasswordErrorText("")
+        setConfirmPasswordIsDisabled(false)
+      }else{
+        setPasswordError(false)
+        setPasswordColor("")
+        setPasswordFocused(false)
+        setPasswordErrorText("")
+        setConfirmPasswordIsDisabled(true)
+      }
+      
+    }, [password])
+
+    /* Confirm Password Validation */
+    useEffect(() => {
+      if(confirmPassword !== password && confirmPassword.length > 0){
+        setConfirmPasswordError(true)
+        setConfirmPasswordColor("")
+        setConfirmPasswordErrorText("Please confirm password.")
+      }else if(confirmPassword === password){
+        setConfirmPasswordError(false)
+        setConfirmPasswordColor("success")
+        setConfirmPasswordFocused(true)
+        setConfirmPasswordErrorText("")
+      }else{
+        setConfirmPasswordError(false)
+        setConfirmPasswordColor("")
+        setConfirmPasswordFocused(false)
+        setConfirmPasswordErrorText("")
+      }
+    }, [password, confirmPassword])
+    
+    useEffect(() => {
+      if(firstNameColor === "success" && lastNameColor === "success" && emailColor === "success" && passwordColor ==="success" && confirmPasswordColor === "success"){
         setIsDisabled(false)
       }else{
         setIsDisabled(true)
       }
-    
-    }, [firstName, lastName, email, password, confirmPassword])
+    }, [firstNameColor, lastNameColor, emailColor, passwordColor, confirmPasswordColor])
+
+    const signUp = (e) => {
+      e.preventDefault()
+
+      /* Capitalize First and Last Name */
+      const firstNameLetters = firstName.split(" ")
+      const lastNameLetters = lastName.split(" ")
+      for (let i = 0; i < firstNameLetters.length; i++) {
+        firstNameLetters[i] = firstNameLetters[i].charAt(0).toUpperCase() + firstNameLetters[i].slice(1)
+      }
+      for (let i = 0; i < lastNameLetters.length; i++) {
+        lastNameLetters[i] = lastNameLetters[i].charAt(0).toUpperCase() + lastNameLetters[i].slice(1)
+      }
+      const firstNameCapitalize = firstNameLetters.join(" ")
+      const lastNameCapitalize = lastNameLetters.join(" ")
+
+      fetch(`http://localhost:3011/api/users/signup`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          firstName: firstNameCapitalize, lastName: lastNameCapitalize, email, password
+        })
+      })
+      .then(response => response.json())
+      .then(response => {
+        if(response){
+          alert(`Creating account successful.`)
+          navigate(`/`)
+        }else{
+          alert(`Please try again.`)
+          navigate(`/signup`)
+        }
+      })
+    }
 
   return (
     <>
@@ -51,6 +244,8 @@ export default function Signup() {
           <FormControl
           className={classes.form}
           component="form"
+          noValidate
+          onSubmit={(e) => signUp(e)}
           >
               <Typography
               variant="h4"
@@ -75,10 +270,12 @@ export default function Signup() {
               label="First Name" 
               variant="outlined"
               autoCapitalize='on'
-              autoComplete='off'
-              noValidate
               required
+              color={firstNameColor}
+              error={firstNameError}
+              helperText={firstNameErrorText}
               value={firstName}
+              focused={firstNameFocused}
               onChange={(e) => setFirstName(e.target.value)}
               />
 
@@ -89,10 +286,12 @@ export default function Signup() {
               label="Last Name" 
               variant="outlined"
               autoCapitalize='on'
-              autoComplete='off'
-              noValidate 
               required
+              color={lastNameColor}
+              error={lastNameError}
+              helperText={lastNameErrorText}
               value={lastName}
+              focused={lastNameFocused}
               onChange={(e) => setLastName(e.target.value)}
               />
               
@@ -102,10 +301,12 @@ export default function Signup() {
               name='email' 
               label="Email" 
               variant="outlined"
-              autoComplete='off'
-              noValidate
               required
               value={email}
+              color={emailColor}
+              error={emailError}
+              helperText={emailErrorText}
+              focused={emailFocused}
               onChange={(e) => setEmail(e.target.value)}
               />
 
@@ -115,10 +316,12 @@ export default function Signup() {
               name='password' 
               label="Password"
               variant="outlined"
-              autoComplete='off'
-              noValidate
               required
               value={password}
+              color={passwordColor}
+              error={passwordError}
+              helperText={passwordErrorText}
+              focused={passwordFocused}
               onChange={(e) => setPasword(e.target.value)}
               />
             
@@ -128,14 +331,23 @@ export default function Signup() {
               name='confirmPassword' 
               label="Confirm Password"
               variant="outlined"
-              autoComplete='off'
-              noValidate
               required
               value={confirmPassword}
+              color={confirmPasswordColor}
+              error={confirmPasswordError}
+              helperText={confirmPasswordErrorText}
+              focused={confirmPasswordFocused}
+              disabled={confirmPasswordIsDisabled}
               onChange={(e) => setConfirmPassword(e.target.value)}
               />
 
-              <Button type='submit' variant="contained" disabled={isDisabled}>Log in</Button>
+              <Button 
+              type='submit' 
+              variant="contained" 
+              disabled={isDisabled}
+              >
+                Sign Up
+              </Button>
 
               <Typography
               variant="p"
