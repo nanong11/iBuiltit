@@ -1,8 +1,8 @@
 import { Button, FormControl, TextField, Typography } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { makeStyles } from '@material-ui/styles';
-import { loginSuccess, loginFail } from '../redux/userSlice';
-import { useDispatch, useSelector } from 'react-redux';
+import { setUserData } from '../redux/userSlice';
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 const useStyles = makeStyles({
@@ -18,7 +18,6 @@ export default function Login() {
     const classes = useStyles()
     const dispatch = useDispatch()
     const navigate = useNavigate()
-    
 
     const [ email, setEmail ] = useState("")
     const [ emailColor, setEmailColor ] = useState("")
@@ -127,7 +126,7 @@ export default function Login() {
               })
               .then(response => response.json())
               .then(response => {
-                dispatch(loginSuccess(response))
+                dispatch(setUserData(response))
                 navigate(`/`)
               })
             }else{
@@ -140,77 +139,77 @@ export default function Login() {
   return (
     <>
         <FormControl
-        className={classes.form}
-        component="form"
-        noValidate
-        onSubmit={(e) => Login(e)}
+          className={classes.form}
+          component="form"
+          noValidate
+          onSubmit={(e) => Login(e)}
         >
             <Typography
-            variant="h4"
-            component="h1"
-            align='center'
-            fontWeight="900"
+              variant="h4"
+              component="h1"
+              align='center'
+              fontWeight="900"
             >
                Welcome to iBuiltit
             </Typography>
             <Typography
-            variant="p"
-            component="p"
-            align='center'
+              variant="p"
+              component="p"
+              align='center'
             >
                 Login with email &amp; password
             </Typography>
             
             <TextField 
-            type="email" 
-            id="email" 
-            name='email' 
-            label="Email" 
-            variant="outlined"
-            required
-            value={email}
-            color={emailColor}
-            error={emailError}
-            helperText={emailErrorText}
-            focused={emailFocused}
-            onChange={(e) => setEmail(e.target.value)}
+              type="email" 
+              id="email" 
+              name='email' 
+              label="Email" 
+              variant="outlined"
+              required
+              value={email}
+              color={emailColor}
+              error={emailError}
+              helperText={emailErrorText}
+              focused={emailFocused}
+              onChange={(e) => setEmail(e.target.value)}
             />
 
             <TextField 
-            type="password" 
-            id="password" 
-            name='password' 
-            label="Password"
-            variant="outlined"
-            required
-            value={password}
-            color={passwordColor}
-            focused={passwordFocused}
-            error={passwordError}
-            helperText={passwordErrorText}
-            onChange={(e) => setPasword(e.target.value)}
+              type="password" 
+              id="password" 
+              name='password' 
+              label="Password"
+              variant="outlined"
+              required
+              value={password}
+              color={passwordColor}
+              focused={passwordFocused}
+              error={passwordError}
+              helperText={passwordErrorText}
+              onChange={(e) => setPasword(e.target.value)}
             />
             
             <Button
-            type="submit"
-            variant="contained" 
-            disabled={isLoginDisabled}
+              type="submit"
+              variant="contained" 
+              disabled={isLoginDisabled}
             >
                 Log in
             </Button>
 
             <Typography
-             variant="p"
-             component="p"
-             align='center'
+              variant="p"
+              component="p"
+              align='center'
             >
                 Don't have account? 
             </Typography>
             <Typography
-            variant="a"
-            component="a"
-            align='center'
-            href='/signup'
+              variant="a"
+              component="a"
+              align='center'
+              href='/signup'
             >
                 Sign up
             </Typography>
