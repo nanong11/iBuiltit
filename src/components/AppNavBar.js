@@ -15,6 +15,8 @@ import Login from '../pages/Login';
 import FaceTwoToneIcon from '@mui/icons-material/FaceTwoTone';
 import { useSelector, useDispatch } from 'react-redux';
 import { setUserData } from '../redux/userSlice';
+import Logout from '../pages/Logout';
+import { useNavigate } from 'react-router-dom';
 
 const token = localStorage.getItem(`token`)
 
@@ -64,7 +66,7 @@ const settings = [
   },
   {
     linkName: "Logout",
-    path: "#"
+    path: "/logout"
   }
 ];
 
@@ -120,6 +122,15 @@ export default function AppNavBar(props) {
       setOpenLoginDialog(false)
     }
 
+    const navigate = useNavigate()
+    const handleUserLink = () => {
+      return(
+        settings.map(link => {
+          navigate(link.path)
+        })
+      )
+    }
+
     if(user.isAdmin === false){
       return(
           <Box sx={{ flexGrow: 0 }}>
@@ -170,7 +181,12 @@ export default function AppNavBar(props) {
               >
                 {settings.map((link) => (
                   <MenuItem key={link.linkName} onClick={(e) => handleCloseUserMenu(e)}>
-                    <Typography textAlign="center">{link.linkName}</Typography>
+                    <Typography
+                    textAlign="center" 
+                    onClick={(e) => handleUserLink(e)}
+                    >
+                      {link.linkName}
+                    </Typography>
                   </MenuItem>
                 ))}
               </Menu>

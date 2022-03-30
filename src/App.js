@@ -8,9 +8,7 @@ import Home from "./pages/Home";
 import WithAppNavBar from "./components/WithAppNavBar";
 import WithoutAppNavBar from "./components/WithoutAppNavBar";
 import Signup from "./pages/Signup";
-
-
-
+import Logout from "./pages/Logout";
 
 function App() {
   return (
@@ -21,6 +19,8 @@ function App() {
       </Route>
       <Route element={<WithAppNavBar />}>
         <Route path="/" element={<Home />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/logout" element={<Logout />} />
       </Route>
     </Routes>
   </BrowserRouter>
