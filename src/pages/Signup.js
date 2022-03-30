@@ -2,6 +2,7 @@ import { Button, FormControl, Grid, TextField, Typography } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { makeStyles } from '@material-ui/styles'
 import { useNavigate } from "react-router-dom"
+import AppBarLogo from '../components/AppBarLogo'
 
 /* Custom Styles */
 const useStyles = makeStyles({
@@ -14,7 +15,7 @@ const useStyles = makeStyles({
       gap: "1rem",
     },
     gridItem: {
-      border: "1px solid black",
+      border: "2px solid #7027A0",
       borderRadius: "10px",
       padding: "1rem",
     }
@@ -64,7 +65,7 @@ export default function Signup() {
         setFirstNameErrorText("First Name should only consist of letters.")
       }else if(firstName.length > 1 && /^[a-zA-Z\s]+$/.test(firstName)){
         setFirstNameError(false)
-        setFirstNameColor("success")
+        setFirstNameColor("primary")
         setFirstNameErrorText("")
         setFirstNameFocused(true)
       }else if(firstName.length === 1){
@@ -84,7 +85,7 @@ export default function Signup() {
         setLastNameErrorText("Last Name should only consist of letters.")
       }else if(lastName.length > 1 && /^[a-zA-Z\s]+$/.test(lastName)){
         setLastNameError(false)
-        setLastNameColor("success")
+        setLastNameColor("primary")
         setLastNameErrorText("")
         setLastNameFocused(true)
       }else if(lastName.length === 1){
@@ -123,7 +124,7 @@ export default function Signup() {
             setEmailFocused(false)
           }else{
             setEmailError(false)
-            setEmailColor(`success`)
+            setEmailColor(`primary`)
             setEmailFocused(true)
           }
           
@@ -151,7 +152,7 @@ export default function Signup() {
         setConfirmPasswordIsDisabled(true)
       }else if(password.length >= 8){
         setPasswordError(false)
-        setPasswordColor("success")
+        setPasswordColor("primary")
         setPasswordFocused(true)
         setPasswordErrorText("")
         setConfirmPasswordIsDisabled(false)
@@ -173,7 +174,7 @@ export default function Signup() {
         setConfirmPasswordErrorText("Please confirm password.")
       }else if(confirmPassword === password){
         setConfirmPasswordError(false)
-        setConfirmPasswordColor("success")
+        setConfirmPasswordColor("primary")
         setConfirmPasswordFocused(true)
         setConfirmPasswordErrorText("")
       }else{
@@ -186,7 +187,7 @@ export default function Signup() {
     
     /* Sign Up Button Activate */
     useEffect(() => {
-      if(firstNameColor === "success" && lastNameColor === "success" && emailColor === "success" && passwordColor ==="success" && confirmPasswordColor === "success"){
+      if(firstNameColor === "primary" && lastNameColor === "primary" && emailColor === "primary" && passwordColor ==="primary" && confirmPasswordColor === "primary"){
         setIsDisabled(false)
       }else{
         setIsDisabled(true)
@@ -232,12 +233,13 @@ export default function Signup() {
 
   return (
     <>
+      <AppBarLogo />
       <Grid 
       container
       spacing={0}
       alignItems="center"
       justifyContent="center"
-      sx={{ minHeight: '100vh' }}
+      sx={{ minHeight: '100vh', backgroundColor: "#f0f0f0" }}
       >
         <Grid item xs={10} sm={8} md={5} xl={3} className={classes.gridItem}>
           <FormControl
@@ -342,7 +344,7 @@ export default function Signup() {
 
               <Button 
               type='submit' 
-              variant="contained" 
+              variant="contained"
               disabled={isDisabled}
               >
                 Sign Up
@@ -356,10 +358,11 @@ export default function Signup() {
                   Already have account? 
               </Typography>
               <Typography
-              variant="a"
+              variant="h6"
               component="a"
               align='center'
               href='/'
+              sx={{ textDecoration: "none", fontWeight: 600}}
               >
                   Login
               </Typography>

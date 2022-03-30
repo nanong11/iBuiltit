@@ -55,7 +55,7 @@ export default function Login() {
           .then(response => {
             if(response){
               setEmailError(false)
-              setEmailColor(`success`)
+              setEmailColor("primary")
               setEmailFocused(true)
               setEmailErrorText("")
             }else{
@@ -85,7 +85,7 @@ export default function Login() {
           setPasswordError(true)
           setPasswordErrorText("")
         }else if(password.length >= 8){
-          setPasswordColor("success")
+          setPasswordColor("primary")
           setPasswordFocused(true)
           setPasswordError(false)
           setPasswordErrorText("")
@@ -99,7 +99,7 @@ export default function Login() {
 
     /* Login Button Activate */
     useEffect(() => {
-      if(emailColor === "success" && passwordColor ==="success"){
+      if(emailColor === "primary" && passwordColor === "primary"){
         setIsLoginDisabled(false)
       }else{
         setIsLoginDisabled(true)
@@ -212,10 +212,11 @@ export default function Login() {
                 Don't have account? 
             </Typography>
             <Typography
-              variant="a"
+              variant="h6"
               component="a"
               align='center'
               href='/signup'
+              sx={{ textDecoration: "none", fontWeight: 600}}
             >
                 Sign up
             </Typography>
