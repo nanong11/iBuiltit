@@ -1,5 +1,6 @@
 import { Grid } from '@mui/material'
 import React from 'react'
+import Banner from '../components/Banner'
 
 export default function Home() {
   return (
@@ -10,7 +11,7 @@ export default function Home() {
       sx={{ minHeight: '100vh' }}
       >
           <Grid item>
-              <h1>Hello World</h1>
+              <Banner />
 
           </Grid>
     </Grid>

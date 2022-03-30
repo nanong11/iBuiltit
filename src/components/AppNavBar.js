@@ -96,7 +96,7 @@ export default function AppNavBar(props) {
     })
     
     return(
-      <Slide appear={false} direction='down' in={!trigger}>
+      <Slide appear={false} direction='down' in={trigger}>
         {children}
       </Slide>
     )
