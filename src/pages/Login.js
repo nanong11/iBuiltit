@@ -1,7 +1,9 @@
 import { Button, FormControl, TextField, Typography } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { makeStyles } from '@material-ui/styles';
-
+import { loginSuccess, loginFail } from '../redux/userSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 const useStyles = makeStyles({
     form: {
@@ -13,28 +15,135 @@ const useStyles = makeStyles({
 })
 
 export default function Login() {
+    const classes = useStyles()
+    const dispatch = useDispatch()
+    const navigate = useNavigate()
+    
+
     const [ email, setEmail ] = useState("")
+    const [ emailColor, setEmailColor ] = useState("")
+    const [ emailError, setEmailError ] = useState(false)
+    const [ emailErrorText, setEmailErrorText ] = useState("")
+    const [ emailFocused, setEmailFocused ] = useState(false)
+    
     const [ password, setPasword ] = useState("")
+    const [ passwordColor, setPasswordColor ] = useState("")
+    const [ passwordError, setPasswordError ] = useState(false)
+    const [ passwordErrorText, setPasswordErrorText ] = useState("")
+    const [ passwordFocused, setPasswordFocused ] = useState(false)
+
     const [ isLoginDisabled, setIsLoginDisabled ] = useState(true)
 
-    const classes = useStyles()
-
+    /* Email Check */
     useEffect(() => {
-      if(email !== "" && password !==""){
-          setIsLoginDisabled(false)
-      }else{
-          setIsLoginDisabled(true)
-      }
-    
-    }, [email, password])
-    
+        const validateEmail = (em) => {
+          const mailFormat = /^(([^<>()\]\\.,;:\s@"]+(\.[^<>()\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+          return mailFormat.test(String(em).toLowerCase())
+        }
+        if(email.length > 0 && validateEmail(email)){
+          setEmailErrorText("")
+          setEmailColor("")
+          fetch(`/api/users/check-email`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              email
+            })
+          })
+          .then(response => response.json())
+          .then(response => {
+            if(response){
+              setEmailError(false)
+              setEmailColor(`success`)
+              setEmailFocused(true)
+              setEmailErrorText("")
+            }else{
+              setEmailError(true)
+              setEmailErrorText("Email doesn't exist.")
+              setEmailFocused(false)
+            }
+          })
+        }else if(email.length > 0 && validateEmail(email) === false){
+          setEmailColor("")
+          setEmailError(true)
+          setEmailErrorText("Please input valid email.")
+          setEmailFocused(false)
+        }else{
+          setEmailError(false)
+          setEmailErrorText("")
+          setEmailColor("")
+          setEmailFocused(false)
+        }
+      }, [email])
 
+    /* Password Check */
+    useEffect(() => {
+        if(password.length > 0 && password.length < 8){
+          setPasswordColor("")
+          setPasswordFocused(false)
+        }else if(password.length >= 8){
+          setPasswordColor("success")
+          setPasswordFocused(true)
+        }else{
+          setPasswordColor("")
+          setPasswordFocused(false)
+        }
+      }, [password])
+
+    /* Login Button Activate */
+    useEffect(() => {
+      if(emailColor === "success" && passwordColor ==="success"){
+        setIsLoginDisabled(false)
+      }else{
+        setIsLoginDisabled(true)
+      }
+    }, [emailColor, passwordColor])
+
+    /* Login Function */
+    const Login = (e) => {
+        e.preventDefault()
+        fetch(`https://mysterious-ocean-63835.herokuapp.com/api/users/login`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                email, password
+            })
+        })
+        .then(response => response.json())
+        .then(response => {
+            if(response.token !== undefined){
+              localStorage.setItem(`token`, response.token)
+              const {token} = response
+
+              fetch(`https://mysterious-ocean-63835.herokuapp.com/api/users/profile`, {
+                method: "GET",
+                headers: {
+                  "Authorization": `Bearer ${token}`
+                }
+              })
+              .then(response => response.json())
+              .then(response => {
+                dispatch(loginSuccess(response))
+                navigate(`/`)
+              })
+            }else{
+              setPasswordError(true)
+              setPasswordErrorText("Invalid password")
+            }
+        })
+    }
     
   return (
     <>
         <FormControl
         className={classes.form}
         component="form"
+        noValidate
+        onSubmit={(e) => Login(e)}
         >
             <Typography
             variant="h4"
@@ -51,15 +160,19 @@ export default function Login() {
             >
                 Login with email &amp; password
             </Typography>
-          
+            
             <TextField 
             type="email" 
             id="email" 
             name='email' 
             label="Email" 
-            variant="outlined" 
+            variant="outlined"
             required
             value={email}
+            color={emailColor}
+            error={emailError}
+            helperText={emailErrorText}
+            focused={emailFocused}
             onChange={(e) => setEmail(e.target.value)}
             />
 
@@ -69,13 +182,22 @@ export default function Login() {
             name='password' 
             label="Password"
             variant="outlined"
-            noValidate
             required
             value={password}
+            color={passwordColor}
+            focused={passwordFocused}
+            error={passwordError}
+            helperText={passwordErrorText}
             onChange={(e) => setPasword(e.target.value)}
             />
-           
-            <Button variant="contained" disabled={isLoginDisabled}>Log in</Button>
+            
+            <Button
+            type="submit"
+            variant="contained" 
+            disabled={isLoginDisabled}
+            >
+                Log in
+            </Button>
 
             <Typography
              variant="p"

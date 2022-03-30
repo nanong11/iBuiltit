@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react'
 import { makeStyles } from '@material-ui/styles'
 import { useNavigate } from "react-router-dom"
 
-
 /* Custom Styles */
 const useStyles = makeStyles({
     form: {
@@ -20,7 +19,6 @@ const useStyles = makeStyles({
       padding: "1rem",
     }
 })
-
 
 export default function Signup() {
     const navigate = useNavigate()
@@ -144,7 +142,6 @@ export default function Signup() {
       
     }, [email])
 
-
     /* Password Validation */
     useEffect(() => {
       if(password.length > 0 && password.length < 8){
@@ -187,6 +184,7 @@ export default function Signup() {
       }
     }, [password, confirmPassword])
     
+    /* Sign Up Button Activate */
     useEffect(() => {
       if(firstNameColor === "success" && lastNameColor === "success" && emailColor === "success" && passwordColor ==="success" && confirmPasswordColor === "success"){
         setIsDisabled(false)
@@ -195,7 +193,8 @@ export default function Signup() {
       }
     }, [firstNameColor, lastNameColor, emailColor, passwordColor, confirmPasswordColor])
 
-    const signUp = (e) => {
+    /* Sign Up Function */
+    const SignUp = (e) => {
       e.preventDefault()
 
       /* Capitalize First and Last Name */
@@ -210,7 +209,7 @@ export default function Signup() {
       const firstNameCapitalize = firstNameLetters.join(" ")
       const lastNameCapitalize = lastNameLetters.join(" ")
 
-      fetch(`http://localhost:3011/api/users/signup`, {
+      fetch(`/api/users/signup`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -245,7 +244,7 @@ export default function Signup() {
           className={classes.form}
           component="form"
           noValidate
-          onSubmit={(e) => signUp(e)}
+          onSubmit={(e) => SignUp(e)}
           >
               <Typography
               variant="h4"

@@ -13,6 +13,7 @@ import { Dialog, Slide} from '@mui/material';
 import useScrollTrigger from '@mui/material/useScrollTrigger';
 import Login from '../pages/Login';
 import FaceTwoToneIcon from '@mui/icons-material/FaceTwoTone';
+import { useSelector } from 'react-redux';
 
 const pages = [
   {
@@ -57,6 +58,9 @@ const settings = ['Profile', 'Dashboard', 'Logout'];
 
   
 export default function AppNavBar(props) {
+
+  const user = useSelector( (state) => state.user.value)
+  console.log(user)
 
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
@@ -196,8 +200,8 @@ export default function AppNavBar(props) {
               onClose={(e) => handleCloseDialog(e)}
               >
                 <Login />
-
               </Dialog>
+              
             </Box>
 
 
