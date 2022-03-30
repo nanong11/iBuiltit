@@ -82,12 +82,18 @@ export default function Login() {
         if(password.length > 0 && password.length < 8){
           setPasswordColor("")
           setPasswordFocused(false)
+          setPasswordError(true)
+          setPasswordErrorText("")
         }else if(password.length >= 8){
           setPasswordColor("success")
           setPasswordFocused(true)
+          setPasswordError(false)
+          setPasswordErrorText("")
         }else{
           setPasswordColor("")
           setPasswordFocused(false)
+          setPasswordError(false)
+          setPasswordErrorText("")
         }
       }, [password])
 
