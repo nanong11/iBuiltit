@@ -19,7 +19,6 @@ function App() {
       </Route>
       <Route element={<WithAppNavBar />}>
         <Route path="/" element={<Home />} />
-        <Route path="/signup" element={<Signup />} />
         <Route path="/logout" element={<Logout />} />
       </Route>
     </Routes>

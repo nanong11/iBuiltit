@@ -8,7 +8,7 @@ export default function Logout() {
     useEffect(() => {
         localStorage.clear()
         dispatch(setUserData({}))
-    }, [])
+    }, [dispatch])
   return (
     <Navigate to={"/"} />
   )

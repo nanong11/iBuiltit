@@ -12,13 +12,9 @@ import MenuItem from '@mui/material/MenuItem';
 import { Dialog, Slide} from '@mui/material';
 import useScrollTrigger from '@mui/material/useScrollTrigger';
 import Login from '../pages/Login';
-import FaceTwoToneIcon from '@mui/icons-material/FaceTwoTone';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { useSelector, useDispatch } from 'react-redux';
 import { setUserData } from '../redux/userSlice';
-import Logout from '../pages/Logout';
-import { useNavigate } from 'react-router-dom';
-
-const token = localStorage.getItem(`token`)
 
 const pages = [
   {
@@ -59,19 +55,19 @@ const pages = [
   },
 ];
 
-const settings = [
+const userSettings = [
   {
-    linkName: "Profile",
+    name: "Profile",
     path: "#"
   },
   {
-    linkName: "Logout",
+    name: "Logout",
     path: "/logout"
   }
 ];
 
 export default function AppNavBar(props) {
-
+  const token = localStorage.getItem(`token`)
   const user = useSelector( (state) => state.user.value)
   const dispatch = useDispatch()
 
@@ -87,8 +83,10 @@ export default function AppNavBar(props) {
       .then(response => {
         dispatch(setUserData(response))
       })
+    }else{
+      dispatch(setUserData({}))
     }
-  }, [dispatch])
+  }, [dispatch, token])
 
   function ShowAppBarOnScroll(props) {
     const { children, window } = props
@@ -103,7 +101,7 @@ export default function AppNavBar(props) {
       </Slide>
     )
   }
-
+  
   const UserLinks = () => {
     const [anchorElUser, setAnchorElUser] = useState(null);
     const [openLoginDialog, setOpenLoginDialog] = useState(false);
@@ -121,30 +119,30 @@ export default function AppNavBar(props) {
     const handleCloseDialog = () => {
       setOpenLoginDialog(false)
     }
-
-    const navigate = useNavigate()
-    const handleUserLink = () => {
-      return(
-        settings.map(link => {
-          navigate(link.path)
-        })
-      )
-    }
-
-    if(user.isAdmin === false){
+    
+    if(token && user.isAdmin === false){
       return(
           <Box sx={{ flexGrow: 0 }}>
+              {
+               token ?
+               <Typography
+               component="span"
+               >{user.firstName}</Typography>
+               :
+               null
+              }
               <IconButton
                 onClick={(e) => handleOpenUserMenu(e)}
                 aria-controls={Boolean(anchorElUser) ? 'account-menu' : undefined}
                 aria-haspopup="true"
                 aria-expanded={Boolean(anchorElUser) ? 'true' : undefined}
               >
-                <FaceTwoToneIcon
-                fontSize='large'
+                <AccountCircleIcon
+                  fontSize='large'
+                  color='inherit'
                 />
               </IconButton>
-              
+             
               <Menu
                 anchorEl={anchorElUser}
                 id="account-menu"
@@ -179,13 +177,19 @@ export default function AppNavBar(props) {
                   },
                 }}
               >
-                {settings.map((link) => (
-                  <MenuItem key={link.linkName} onClick={(e) => handleCloseUserMenu(e)}>
+                {userSettings.map((link) => (
+                  <MenuItem 
+                    key={link.name} 
+                    onClick={(e) => handleCloseUserMenu(e)}
+                  >
                     <Typography
-                    textAlign="center" 
-                    onClick={(e) => handleUserLink(e)}
+                      variant="a"
+                      component="a"
+                      textAlign="center"
+                      href={link.path}
+                      style={{ textDecoration: 'none', color: "grey" }}
                     >
-                      {link.linkName}
+                      {link.name}
                     </Typography>
                   </MenuItem>
                 ))}
@@ -196,8 +200,9 @@ export default function AppNavBar(props) {
       return(
         <Box sx={{ flexGrow: 0 }}>
           <IconButton onClick={(e) => handleOpenDialog(e)}>
-            <FaceTwoToneIcon
+            <AccountCircleIcon
               fontSize='large'
+              color='inherit'
             />
           </IconButton>
               
