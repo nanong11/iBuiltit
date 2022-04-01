@@ -10,6 +10,7 @@ import WithAppNavBar from "./components/WithAppNavBar";
 import WithoutAppNavBar from "./components/WithoutAppNavBar";
 import Signup from "./pages/Signup";
 import Logout from "./pages/Logout";
+import Products from "./pages/Products";
 
 const theme = createTheme({
   palette: {
@@ -18,7 +19,7 @@ const theme = createTheme({
     },
     secondary:{
       main: '#1DB9C3'
-    },
+    }
   },
   typography: {
     fontFamily: 'Quicksand',
@@ -26,7 +27,7 @@ const theme = createTheme({
     fontWeightRegular: 500,
     fontWeightMedium: 600,
     fontWeightBold: 700,
-  }
+  },
 })
 
 function App() {
@@ -39,6 +40,7 @@ function App() {
         </Route>
         <Route element={<WithAppNavBar />}>
           <Route path="/" element={<Home />} />
+          <Route exact path="/products" element={<Products />} />
           <Route path="/logout" element={<Logout />} />
         </Route>
       </Routes>

@@ -6,17 +6,23 @@ import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import Menu from '@mui/material/Menu';
 import CategoryRoundedIcon from '@mui/icons-material/CategoryRounded';
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import Container from '@mui/material/Container';
-import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
-import { Dialog, Slide} from '@mui/material';
+import { Button, Dialog, Slide} from '@mui/material';
 import useScrollTrigger from '@mui/material/useScrollTrigger';
 import Login from '../pages/Login';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { useSelector, useDispatch } from 'react-redux';
 import { setUserData } from '../redux/userSlice';
+import { useNavigate } from 'react-router-dom';
 
 const pages = [
+  {
+    pageName: "All Products",
+    path: "/products",
+    hashPath: "#products"
+  },
   {
     pageName: 'Processor',
     path: '#'
@@ -70,6 +76,7 @@ export default function AppNavBar(props) {
   const token = localStorage.getItem(`token`)
   const user = useSelector( (state) => state.user.value)
   const dispatch = useDispatch()
+  const navigate = useNavigate()
 
   useEffect(() => {
     if(token){
@@ -91,12 +98,12 @@ export default function AppNavBar(props) {
   function ShowAppBarOnScroll(props) {
     const { children, window } = props
 
-    const trigger = useScrollTrigger({
+    const onScrollDown = useScrollTrigger({
       target: window ? window() : undefined
     })
     
     return(
-      <Slide appear={false} direction='down' in={trigger}>
+      <Slide appear={true} direction='down' in={onScrollDown}>
         {children}
       </Slide>
     )
@@ -139,7 +146,7 @@ export default function AppNavBar(props) {
               >
                 <AccountCircleIcon
                   fontSize='large'
-                  color='inherit'
+                  color='secondary'
                 />
               </IconButton>
              
@@ -199,6 +206,12 @@ export default function AppNavBar(props) {
     }else{
       return(
         <Box sx={{ flexGrow: 0 }}>
+          <Typography
+            component="span"
+            color="white"
+            onClick={(e) => handleOpenDialog(e)}
+            >Login
+          </Typography>
           <IconButton onClick={(e) => handleOpenDialog(e)}>
             <AccountCircleIcon
               fontSize='large'
@@ -219,26 +232,37 @@ export default function AppNavBar(props) {
     }
   }
 
-  const CatergorySmallScreen = () => {
+  const Catergories = () => {
     const [anchorElNav, setAnchorElNav] = useState(null);
+    const [arrowTurn, setArrowTurn] = useState("")
     const handleOpenNavMenu = (e) => {
       setAnchorElNav(e.currentTarget);
+      setArrowTurn(".25turn")
     };
     const handleCloseNavMenu = () => {
       setAnchorElNav(null);
+      setArrowTurn("")
     };
+    const handleCategoryLink = (pageLink) => {
+      navigate(pageLink)
+    }
 
     return(
-      <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
-        <IconButton
+      <Box sx={{ mr: 'auto' }}>
+        <Button
           size="large"
           aria-controls="menu-appbar"
           aria-haspopup="true"
           onClick={(e) => handleOpenNavMenu(e)}
-          color="inherit"
+          color="secondary"
         >
           <CategoryRoundedIcon />
-        </IconButton>
+          <Typography sx={{ ml: 1, textTransform: 'none' }}>
+              Categories
+          </Typography>
+          <ArrowForwardIosIcon sx={{ ml: 1, fontSize: 15, transition: "all 0.5s ease", transform: `rotate(${arrowTurn})` }} />
+        </Button>
+
         <Menu
           id="menu-appbar"
           anchorEl={anchorElNav}
@@ -254,12 +278,48 @@ export default function AppNavBar(props) {
           open={Boolean(anchorElNav)}
           onClose={(e) => handleCloseNavMenu(e)}
           sx={{
-            display: { xs: 'block', md: 'none' },
+            display: { xs: 'block' },
+          }}
+          PaperProps={{
+            elevation: 0,
+            sx: {
+              overflow: 'visible',
+              filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+              mt: 2,
+              ml: 1,
+              '& .MuiAvatar-root': {
+                width: 32,
+                height: 32,
+                ml: -0.5,
+                mr: 1,
+              },
+              '&:before': {
+                content: '""',
+                display: 'block',
+                position: 'absolute',
+                top: 0,
+                left: 14,
+                width: 10,
+                height: 10,
+                bgcolor: 'background.paper',
+                transform: 'translateY(-50%) rotate(45deg)',
+                zIndex: 0,
+              },
+            },
           }}
         >
           {pages.map((page) => (
             <MenuItem key={page.pageName} onClick={(e) => handleCloseNavMenu(e)}>
-              <Typography textAlign="center">{page.pageName}</Typography>
+              <Typography
+                variant="a"
+                component="a"
+                textAlign="center"
+                onClick={() => handleCategoryLink(page.path)}
+                href={page.hashPath}
+                style={{ textDecoration: 'none', color: "grey" }}
+              >
+                {page.pageName}
+              </Typography>
             </MenuItem>
           ))}
         </Menu>
@@ -277,37 +337,23 @@ export default function AppNavBar(props) {
             <Typography
               variant="h6"
               component="div"
-              sx={{ mr: 2, display: { xs: 'none', md: 'flex' } }}
+              sx={{ mr: 2, display: { xs: 'none', md: 'block'} }}
             >
               iBuiltit
             </Typography>
-
-            {/* Small screen category */}
-            <CatergorySmallScreen />
             
+            <Catergories />
             
             {/* Small screen logo */}
             <Typography
               variant="h6"
               noWrap
               component="div"
-              sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}
+              sx={{ mr: 'auto', display: { md: 'none' } }}
             >
               iBuiltit
             </Typography>
             
-            {/* Categories Large Screen */}
-            <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-              {pages.map((page) => (
-                <Button
-                  key={page.pageName}
-                  sx={{ my: 2, color: 'white', display: 'block' }}
-                >
-                  {page.pageName}
-                </Button>
-              ))}
-            </Box>
-
             <UserLinks />
 
           </Toolbar>

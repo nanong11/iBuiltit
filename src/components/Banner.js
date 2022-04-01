@@ -5,18 +5,25 @@ import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import Menu from '@mui/material/Menu';
 import CategoryRoundedIcon from '@mui/icons-material/CategoryRounded';
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
-import { Dialog, Slide} from '@mui/material';
-import useScrollTrigger from '@mui/material/useScrollTrigger';
+import { Dialog } from '@mui/material';
 import Login from '../pages/Login';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { useSelector, useDispatch } from 'react-redux';
 import { setUserData } from '../redux/userSlice';
 import { makeStyles } from '@material-ui/styles'
 import { Grid } from '@mui/material'
+import { useNavigate } from 'react-router-dom';
+
 
 const pages = [
+    {
+      pageName: "All Products",
+      path: "/products",
+      hashPath: "#products"
+    },
     {
       pageName: 'Processor',
       path: '#'
@@ -53,23 +60,24 @@ const pages = [
       pageName: 'Accessories',
       path: '#'
     },
-  ];
+];
   
-  const userSettings = [
-    {
-      name: "Profile",
-      path: "#"
-    },
-    {
-      name: "Logout",
-      path: "/logout"
-    }
-  ];
+const userSettings = [
+  {
+    name: "Profile",
+    path: "#"
+  },
+  {
+    name: "Logout",
+    path: "/logout"
+  }
+];
+
 const useStyles = makeStyles({
     banner: {
         backgroundImage: "url('/img/banner1.jpg')",
-        width: "100vw",
-        height: "100vh",
+        width: "100%",
+        minHeight: "100vh",
         display: "flex",
         justifyContent: "center",
         paddingTop: "10rem"
@@ -78,14 +86,14 @@ const useStyles = makeStyles({
         backgroundColor: "#7027A0",
         borderRadius: "5px",
         maxHeight: "4rem",
-        paddingLeft: "1.5rem",
+        paddingLeft: "1rem",
         paddingRight: "1rem"
     }
 })
 
 export default function Banner() {
     const classes = useStyles()
-
+    const navigate = useNavigate()
     const token = localStorage.getItem(`token`)
     const user = useSelector( (state) => state.user.value)
     const dispatch = useDispatch()
@@ -205,7 +213,13 @@ export default function Banner() {
       }else{
         return(
           <Box sx={{ flexGrow: 0 }}>
-            <IconButton onClick={(e) => handleOpenDialog(e)}>
+            <Typography
+                component="span"
+                color="white"
+                onClick={(e) => handleOpenDialog(e)}
+                >Login
+            </Typography>
+            <IconButton style={{ backgroundColor: 'transparent' }} onClick={(e) => handleOpenDialog(e)}>
               <AccountCircleIcon
                 fontSize='large'
                 color='inherit'
@@ -225,26 +239,38 @@ export default function Banner() {
       }
     }
   
-    const CatergorySmallScreen = () => {
+  const Catergories = () => {
       const [anchorElNav, setAnchorElNav] = useState(null);
+      const [arrowTurn, setArrowTurn] = useState("")
+
       const handleOpenNavMenu = (e) => {
         setAnchorElNav(e.currentTarget);
+        setArrowTurn(".25turn")
       };
       const handleCloseNavMenu = () => {
         setAnchorElNav(null);
+        setArrowTurn("")
       };
+      const handleCategoryLink = (pageLink) => {
+        navigate(pageLink)
+      }
   
       return(
-        <Box sx={{ flexGrow: 1, display: { xs: 'flex', xl: 'none' } }}>
-          <IconButton
-            size="large"
+        <Box sx={{ mr: 'auto' }}>
+          <Button
+            size="small"
             aria-controls="menu-appbar"
             aria-haspopup="true"
             onClick={(e) => handleOpenNavMenu(e)}
             color="secondary"
           >
             <CategoryRoundedIcon />
-          </IconButton>
+            <Typography sx={{ ml: 1, textTransform: 'none' }}>
+              Categories
+            </Typography>
+            <ArrowForwardIosIcon sx={{ ml: 1, fontSize: 15, transition: "all 0.5s ease", transform: `rotate(${arrowTurn})` }} />
+          </Button>
+
           <Menu
             id="menu-appbar"
             anchorEl={anchorElNav}
@@ -260,19 +286,54 @@ export default function Banner() {
             open={Boolean(anchorElNav)}
             onClose={(e) => handleCloseNavMenu(e)}
             sx={{
-              display: { xs: 'block', xl: 'none' },
+              display: { xs: 'block' },
+            }}
+            PaperProps={{
+              elevation: 0,
+              sx: {
+                overflow: 'visible',
+                filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+                mt: 3,
+                '& .MuiAvatar-root': {
+                  width: 32,
+                  height: 32,
+                  ml: -0.5,
+                  mr: 1,
+                },
+                '&:before': {
+                  content: '""',
+                  display: 'block',
+                  position: 'absolute',
+                  top: 0,
+                  left: 14,
+                  width: 10,
+                  height: 10,
+                  bgcolor: 'background.paper',
+                  transform: 'translateY(-50%) rotate(45deg)',
+                  zIndex: 0,
+                },
+              },
             }}
           >
             {pages.map((page) => (
               <MenuItem key={page.pageName} onClick={(e) => handleCloseNavMenu(e)}>
-                <Typography textAlign="center">{page.pageName}</Typography>
+                <Typography 
+                  variant="a"
+                  component="a"
+                  textAlign="center"
+                  onClick={() => handleCategoryLink(page.path)}
+                  href={page.hashPath}
+                  style={{ textDecoration: 'none', color: "grey" }}
+                >
+                  {page.pageName}
+                </Typography>
               </MenuItem>
             ))}
           </Menu>
         </Box>
-  
       )
-    }
+  }
+    
   return (
     <Grid
     container
@@ -284,44 +345,31 @@ export default function Banner() {
         xs={10}
         md={8}
         >
-            <Toolbar disableGutters>
+          <Toolbar disableGutters>
             {/* Large screen LOGO */}
             <Typography
               variant="h6"
               component="div"
               color="white"
-              sx={{ mr: 2, display: { xs: 'none', xl: 'flex'} }}
+              sx={{ mr: 2, display: { xs: 'none', md: 'block'} }}
             >
               iBuiltit
             </Typography>
 
             {/* Small screen category */}
-            <CatergorySmallScreen />
-            
+            <Catergories />
             
             {/* Small screen logo */}
             <Typography
               variant="h6"
               noWrap
-              component="div"
-              sx={{ flexGrow: 1, display: { lg: 'flex', xl: 'none' } }}
+              component="a"
+              sx={{ mr: 'auto', display: { md: 'none' } }}
               color="white"
             >
               iBuiltit
             </Typography>
             
-            {/* Categories Large Screen */}
-            <Grid xs={8} md={10} sx={{ flexGrow: 1, display: { xs: 'none', xl: 'flex' } }}>
-              {pages.map((page) => (
-                <Button
-                  key={page.pageName}
-                  sx={{ my: 2, color: 'white', display: 'block' }}
-                >
-                  {page.pageName}
-                </Button>
-              ))}
-            </Grid>
-
             <UserLinks />
 
           </Toolbar>

@@ -18,6 +18,7 @@ const useStyles = makeStyles({
       border: "2px solid #7027A0",
       borderRadius: "10px",
       padding: "1rem",
+      backgroundColor: 'white'
     }
 })
 
@@ -210,7 +211,7 @@ export default function Signup() {
       const firstNameCapitalize = firstNameLetters.join(" ")
       const lastNameCapitalize = lastNameLetters.join(" ")
 
-      fetch(`/api/users/signup`, {
+      fetch(`https://mysterious-ocean-63835.herokuapp.com/api/users/signup`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -239,7 +240,7 @@ export default function Signup() {
       spacing={0}
       alignItems="center"
       justifyContent="center"
-      sx={{ minHeight: '100vh', backgroundColor: "#f0f0f0" }}
+      sx={{minHeight: '100vh'}}
       >
         <Grid item xs={10} sm={8} md={5} xl={3} className={classes.gridItem}>
           <FormControl
@@ -257,7 +258,7 @@ export default function Signup() {
                 Create Your Account
               </Typography>
               <Typography
-              variant="p"
+              variant="body1"
               component="p"
               align='center'
               >
@@ -351,7 +352,7 @@ export default function Signup() {
               </Button>
 
               <Typography
-              variant="p"
+              variant="body1"
               component="p"
               align='center'
               >
