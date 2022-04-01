@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -81,20 +81,15 @@ export default function AppNavBar(props) {
   useEffect(() => {
     if(token){
       fetch(`https://mysterious-ocean-63835.herokuapp.com/api/users/profile`, {
-        method: "GET",
-        headers: {
-          "Authorization": `Bearer ${token}`
-        }
+        headers: {"Authorization": `Bearer ${token}`}
       })
       .then(response => response.json())
       .then(response => {
         dispatch(setUserData(response))
       })
-    }else{
-      dispatch(setUserData({}))
     }
-  }, [dispatch, token])
-
+  }, [token, dispatch])
+  
   function ShowAppBarOnScroll(props) {
     const { children, window } = props
 
@@ -108,7 +103,7 @@ export default function AppNavBar(props) {
       </Slide>
     )
   }
-  
+
   const UserLinks = () => {
     const [anchorElUser, setAnchorElUser] = useState(null);
     const [openLoginDialog, setOpenLoginDialog] = useState(false);
@@ -127,17 +122,18 @@ export default function AppNavBar(props) {
       setOpenLoginDialog(false)
     }
     
-    if(token && user.isAdmin === false){
-      return(
-          <Box sx={{ flexGrow: 0 }}>
-              {
-               token ?
-               <Typography
-               component="span"
-               >{user.firstName}</Typography>
-               :
-               null
-              }
+    return(
+      
+      <Box sx={{ flexGrow: 0 }}>
+          {
+            user.isAdmin === false && token
+            ?
+            <>
+              <Typography
+                component="span"
+              >
+                {user.firstName}
+              </Typography>
               <IconButton
                 onClick={(e) => handleOpenUserMenu(e)}
                 aria-controls={Boolean(anchorElUser) ? 'account-menu' : undefined}
@@ -149,7 +145,6 @@ export default function AppNavBar(props) {
                   color='secondary'
                 />
               </IconButton>
-             
               <Menu
                 anchorEl={anchorElUser}
                 id="account-menu"
@@ -201,37 +196,36 @@ export default function AppNavBar(props) {
                   </MenuItem>
                 ))}
               </Menu>
-          </Box>
-      )
-    }else{
-      return(
-        <Box sx={{ flexGrow: 0 }}>
-          <Typography
-            component="span"
-            color="white"
-            onClick={(e) => handleOpenDialog(e)}
-            >Login
-          </Typography>
-          <IconButton onClick={(e) => handleOpenDialog(e)}>
-            <AccountCircleIcon
-              fontSize='large'
-              color='inherit'
-            />
-          </IconButton>
-              
-          <Dialog
-            fullWidth={true}
-            maxWidth="sm"
-            open={openLoginDialog}
-            onClose={(e) => handleCloseDialog(e)}
-          >
-            <Login />
-          </Dialog>
-        </Box>
-      )
-    }
+            </>
+            :
+            <>
+              <Typography
+                component="span"
+                color="white"
+                onClick={(e) => handleOpenDialog(e)}
+              >
+                Login
+              </Typography>
+              <IconButton onClick={(e) => handleOpenDialog(e)}>
+                <AccountCircleIcon
+                  fontSize='large'
+                  color='inherit'
+                />
+              </IconButton>
+              <Dialog
+                fullWidth={true}
+                maxWidth="sm"
+                open={openLoginDialog}
+                onClose={(e) => handleCloseDialog(e)}
+              >
+                <Login />
+              </Dialog>
+            </>
+          }
+      </Box>
+    )
   }
-
+  
   const Catergories = () => {
     const [anchorElNav, setAnchorElNav] = useState(null);
     const [arrowTurn, setArrowTurn] = useState("")
@@ -324,7 +318,6 @@ export default function AppNavBar(props) {
           ))}
         </Menu>
       </Box>
-
     )
   }
   
@@ -341,9 +334,7 @@ export default function AppNavBar(props) {
             >
               iBuiltit
             </Typography>
-            
             <Catergories />
-            
             {/* Small screen logo */}
             <Typography
               variant="h6"
@@ -353,9 +344,7 @@ export default function AppNavBar(props) {
             >
               iBuiltit
             </Typography>
-            
             <UserLinks />
-
           </Toolbar>
         </Container>
       </AppBar>

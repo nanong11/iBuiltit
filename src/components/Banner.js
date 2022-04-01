@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
@@ -11,12 +11,10 @@ import MenuItem from '@mui/material/MenuItem';
 import { Dialog } from '@mui/material';
 import Login from '../pages/Login';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import { useSelector, useDispatch } from 'react-redux';
-import { setUserData } from '../redux/userSlice';
+import { useSelector } from 'react-redux';
 import { makeStyles } from '@material-ui/styles'
 import { Grid } from '@mui/material'
 import { useNavigate } from 'react-router-dom';
-
 
 const pages = [
     {
@@ -92,153 +90,133 @@ const useStyles = makeStyles({
 })
 
 export default function Banner() {
-    const classes = useStyles()
-    const navigate = useNavigate()
-    const token = localStorage.getItem(`token`)
-    const user = useSelector( (state) => state.user.value)
-    const dispatch = useDispatch()
+  const classes = useStyles()
+  const token = localStorage.getItem(`token`)
+  const user = useSelector( (state) => state.user.value)
+  const navigate = useNavigate()
   
-    useEffect(() => {
-      if(token){
-        fetch(`https://mysterious-ocean-63835.herokuapp.com/api/users/profile`, {
-          method: "GET",
-          headers: {
-            "Authorization": `Bearer ${token}`
-          }
-        })
-        .then(response => response.json())
-        .then(response => {
-          dispatch(setUserData(response))
-        })
-      }else{
-        dispatch(setUserData({}))
-      }
-    }, [dispatch, token])
-  
-    const UserLinks = () => {
-      const [anchorElUser, setAnchorElUser] = useState(null);
-      const [openLoginDialog, setOpenLoginDialog] = useState(false);
-  
-      const handleOpenUserMenu = (e) => {
-        setAnchorElUser(e.currentTarget);
-      };
-      const handleCloseUserMenu = () => {
-        setAnchorElUser(null);
-      };
-  
-      const handleOpenDialog = () => {
-        setOpenLoginDialog(true)
-      }
-      const handleCloseDialog = () => {
-        setOpenLoginDialog(false)
-      }
+  const UserLinks = () => {
+    const [anchorElUser, setAnchorElUser] = useState(null);
+    const [openLoginDialog, setOpenLoginDialog] = useState(false);
+
+    const handleOpenUserMenu = (e) => {
+      setAnchorElUser(e.currentTarget);
+    };
+    const handleCloseUserMenu = () => {
+      setAnchorElUser(null);
+    };
+
+    const handleOpenDialog = () => {
+      setOpenLoginDialog(true)
+    }
+    const handleCloseDialog = () => {
+      setOpenLoginDialog(false)
+    }
       
-      if(token && user.isAdmin === false){
-        return(
-            <Box sx={{ flexGrow: 0 }}>
-                {
-                 token ?
-                 <Typography
-                 component="span"
-                 color="white"
-                 >{user.firstName}</Typography>
-                 :
-                 null
-                }
-                <IconButton
-                  onClick={(e) => handleOpenUserMenu(e)}
-                  aria-controls={Boolean(anchorElUser) ? 'account-menu' : undefined}
-                  aria-haspopup="true"
-                  aria-expanded={Boolean(anchorElUser) ? 'true' : undefined}
-                >
-                  <AccountCircleIcon
-                    fontSize='large'
-                    color='secondary'
-                  />
-                </IconButton>
-               
-                <Menu
-                  anchorEl={anchorElUser}
-                  id="account-menu"
-                  open={Boolean(anchorElUser)}
-                  onClose={(e) => handleCloseUserMenu(e)}
-                  transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-                  anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-                  PaperProps={{
-                    elevation: 0,
-                    sx: {
-                      overflow: 'visible',
-                      filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
-                      mt: 1.5,
-                      '& .MuiAvatar-root': {
-                        width: 32,
-                        height: 32,
-                        ml: -0.5,
-                        mr: 1,
-                      },
-                      '&:before': {
-                        content: '""',
-                        display: 'block',
-                        position: 'absolute',
-                        top: 0,
-                        right: 14,
-                        width: 10,
-                        height: 10,
-                        bgcolor: 'background.paper',
-                        transform: 'translateY(-50%) rotate(45deg)',
-                        zIndex: 0,
-                      },
+    return(
+      <Box sx={{ flexGrow: 0 }}>
+          {
+            user.isAdmin === false && token
+            ?
+            <>
+              <Typography
+                component="span"
+                color='white'
+              >
+                {user.firstName}
+              </Typography>
+              <IconButton
+                onClick={(e) => handleOpenUserMenu(e)}
+                aria-controls={Boolean(anchorElUser) ? 'account-menu' : undefined}
+                aria-haspopup="true"
+                aria-expanded={Boolean(anchorElUser) ? 'true' : undefined}
+              >
+                <AccountCircleIcon
+                  fontSize='large'
+                  color='secondary'
+                />
+              </IconButton>
+              <Menu
+                anchorEl={anchorElUser}
+                id="account-menu"
+                open={Boolean(anchorElUser)}
+                onClose={(e) => handleCloseUserMenu(e)}
+                transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+                anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+                PaperProps={{
+                  elevation: 0,
+                  sx: {
+                    overflow: 'visible',
+                    filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+                    mt: 1.5,
+                    '& .MuiAvatar-root': {
+                      width: 32,
+                      height: 32,
+                      ml: -0.5,
+                      mr: 1,
                     },
-                  }}
-                >
-                  {userSettings.map((link) => (
-                    <MenuItem 
-                      key={link.name} 
-                      onClick={(e) => handleCloseUserMenu(e)}
+                    '&:before': {
+                      content: '""',
+                      display: 'block',
+                      position: 'absolute',
+                      top: 0,
+                      right: 14,
+                      width: 10,
+                      height: 10,
+                      bgcolor: 'background.paper',
+                      transform: 'translateY(-50%) rotate(45deg)',
+                      zIndex: 0,
+                    },
+                  },
+                }}
+              >
+                {userSettings.map((link) => (
+                  <MenuItem 
+                    key={link.name} 
+                    onClick={(e) => handleCloseUserMenu(e)}
+                  >
+                    <Typography
+                      variant="a"
+                      component="a"
+                      textAlign="center"
+                      href={link.path}
+                      style={{ textDecoration: 'none', color: "grey" }}
                     >
-                      <Typography
-                        variant="a"
-                        component="a"
-                        textAlign="center"
-                        href={link.path}
-                        style={{ textDecoration: 'none', color: "grey" }}
-                      >
-                        {link.name}
-                      </Typography>
-                    </MenuItem>
-                  ))}
-                </Menu>
-            </Box>
-        )
-      }else{
-        return(
-          <Box sx={{ flexGrow: 0 }}>
-            <Typography
+                      {link.name}
+                    </Typography>
+                  </MenuItem>
+                ))}
+              </Menu>
+            </>
+            :
+            <>
+              <Typography
                 component="span"
                 color="white"
                 onClick={(e) => handleOpenDialog(e)}
-                >Login
-            </Typography>
-            <IconButton style={{ backgroundColor: 'transparent' }} onClick={(e) => handleOpenDialog(e)}>
-              <AccountCircleIcon
-                fontSize='large'
-                color='inherit'
-              />
-            </IconButton>
-                
-            <Dialog
-              fullWidth={true}
-              maxWidth="sm"
-              open={openLoginDialog}
-              onClose={(e) => handleCloseDialog(e)}
-            >
-              <Login />
-            </Dialog>
-          </Box>
-        )
-      }
-    }
-  
+              >
+                Login
+              </Typography>
+              <IconButton onClick={(e) => handleOpenDialog(e)}>
+                <AccountCircleIcon
+                  fontSize='large'
+                  color='inherit'
+                />
+              </IconButton>
+              <Dialog
+                fullWidth={true}
+                maxWidth="sm"
+                open={openLoginDialog}
+                onClose={(e) => handleCloseDialog(e)}
+              >
+                <Login />
+              </Dialog>
+            </>
+          }
+      </Box>
+    )
+  }
+
   const Catergories = () => {
       const [anchorElNav, setAnchorElNav] = useState(null);
       const [arrowTurn, setArrowTurn] = useState("")
@@ -336,14 +314,14 @@ export default function Banner() {
     
   return (
     <Grid
-    container
-    className={classes.banner}
+      container
+      className={classes.banner}
     >
         <Grid
-        item
-        className={classes.bannerNav}
-        xs={10}
-        md={8}
+          item
+          className={classes.bannerNav}
+          xs={10}
+          md={8}
         >
           <Toolbar disableGutters>
             {/* Large screen LOGO */}

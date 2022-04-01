@@ -4,8 +4,6 @@ import ProductCard from '../components/ProductCard'
 import { useSelector, useDispatch } from 'react-redux'
 import { setProductsData } from '../redux/productSlice'
 
-const token = localStorage.getItem(`token`)
-
 export default function Products() {
   
   const user = useSelector((state => state.user.value))
@@ -14,6 +12,8 @@ export default function Products() {
   const dispatch = useDispatch()
   
   useEffect(() => {
+    const token = localStorage.getItem(`token`)
+    
     if(user.isAdmin === false){
       fetch(`https://mysterious-ocean-63835.herokuapp.com/api/products`, {
         headers: {"Authorization": `Bearer ${token}`}
@@ -37,8 +37,7 @@ export default function Products() {
         justifyContent="center"
         sx={{ minHeight: '100vh' }}
         >
-          
-            {products}
+          {products}
       </Grid>
     </>
   )
