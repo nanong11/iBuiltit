@@ -1,19 +1,17 @@
-import { Grid } from '@mui/material'
+import { Grid, Typography } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import ProductCard from '../components/ProductCard'
 import { useSelector, useDispatch } from 'react-redux'
 import { setProductsData } from '../redux/productSlice'
 
 export default function Products() {
-  
+  const token = localStorage.getItem(`token`)
   const user = useSelector((state => state.user.value))
   const [ products, setProducts ] = useState([])
  
   const dispatch = useDispatch()
   
   useEffect(() => {
-    const token = localStorage.getItem(`token`)
-    
     if(user.isAdmin === false){
       fetch(`https://mysterious-ocean-63835.herokuapp.com/api/products`, {
         headers: {"Authorization": `Bearer ${token}`}
@@ -26,18 +24,25 @@ export default function Products() {
         }))
       })
     }
-  }, [user.isAdmin, dispatch])
+  }, [user.isAdmin, dispatch, token])
 
   return (
     <>
+      <Typography
+        variant='h5'
+        component='div'
+        textAlign="center"
+        sx={{mt: "3rem"}}
+      >
+        All Products
+      </Typography>
       <Grid
         id="products"
         container
         alignItems="center"
         justifyContent="center"
-        sx={{ minHeight: '100vh' }}
-        >
-          {products}
+      > 
+        {products}
       </Grid>
     </>
   )
