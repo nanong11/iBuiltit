@@ -29,6 +29,7 @@ export default function Products() {
   return (
     <>
       <Grid
+      container
       id="products"
       sx={{paddingTop: "6rem"}}
       >

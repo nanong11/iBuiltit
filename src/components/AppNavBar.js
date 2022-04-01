@@ -9,13 +9,16 @@ import CategoryRoundedIcon from '@mui/icons-material/CategoryRounded';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import Container from '@mui/material/Container';
 import MenuItem from '@mui/material/MenuItem';
-import { Button, Dialog, Slide} from '@mui/material';
+import { Badge, Button, Dialog, Drawer, Slide} from '@mui/material';
 import useScrollTrigger from '@mui/material/useScrollTrigger';
 import Login from '../pages/Login';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { useSelector, useDispatch } from 'react-redux';
 import { setUserData } from '../redux/userSlice';
 import { useNavigate } from 'react-router-dom';
+import { setOrderData } from '../redux/orderSlice';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import Cart from './Cart';
 
 const pages = [
   {
@@ -71,10 +74,25 @@ const userSettings = [
     path: "/logout"
   }
 ];
+function ShowAppBarOnScroll(props) {
+  const { children, window } = props
 
+  const onScrollDown = useScrollTrigger({
+    disableHysteresis: true,
+    threshold: 150,
+    target: window ? window() : undefined
+  })
+  
+  return(
+    <Slide appear={true} direction='down' in={onScrollDown}>
+      {children}
+    </Slide>
+  )
+}
 export default function AppNavBar(props) {
   const token = localStorage.getItem(`token`)
-  const user = useSelector( (state) => state.user.value)
+  const user = useSelector((state) => state.user.value)
+  const order = useSelector((state) => state.order.value)
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
@@ -89,20 +107,26 @@ export default function AppNavBar(props) {
       })
     }
   }, [token, dispatch])
-  
-  function ShowAppBarOnScroll(props) {
-    const { children, window } = props
 
-    const onScrollDown = useScrollTrigger({
-      target: window ? window() : undefined
-    })
-    
-    return(
-      <Slide appear={true} direction='down' in={onScrollDown}>
-        {children}
-      </Slide>
-    )
-  }
+  useEffect(() => {
+    if(user.isAdmin === false){
+      fetch(`https://mysterious-ocean-63835.herokuapp.com/api/orders`, {
+        headers: {"Authorization": `Bearer ${token}`}
+      })
+      .then(response => response.json())
+      .then(response => {
+        response.map(order => {
+          if(order.userId === user._id && order.complete === false){
+            dispatch(setOrderData(order))
+          }
+        })
+      })
+    }
+  }, [user._id, user.isAdmin, dispatch, token, ])
+
+  console.log(order)
+  
+  
 
   const UserLinks = () => {
     const [anchorElUser, setAnchorElUser] = useState(null);
@@ -320,6 +344,11 @@ export default function AppNavBar(props) {
       </Box>
     )
   }
+
+  const [ cartDrawer, setCartDrawer] = useState(false)
+  const toggleCart = () => {
+    setCartDrawer(!cartDrawer)
+  }
   
   return(
     <ShowAppBarOnScroll {...props}>
@@ -345,6 +374,28 @@ export default function AppNavBar(props) {
               iBuiltit
             </Typography>
             <UserLinks />
+            <IconButton 
+            aria-label="cart"
+            onClick={(e) => toggleCart(e)}
+            >
+              <Badge 
+              badgeContent={4} 
+              color="secondary"
+              anchorOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+              >
+                <ShoppingCartIcon />
+              </Badge>
+              <Drawer
+                anchor="right"
+                open={cartDrawer}
+                onClose={(e) => toggleCart(e)}
+              >
+                <Cart />
+              </Drawer>
+            </IconButton>
           </Toolbar>
         </Container>
       </AppBar>

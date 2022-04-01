@@ -8,13 +8,15 @@ import CategoryRoundedIcon from '@mui/icons-material/CategoryRounded';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
-import { Dialog } from '@mui/material';
+import { Badge, Dialog, Drawer } from '@mui/material';
 import Login from '../pages/Login';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { useSelector } from 'react-redux';
 import { makeStyles } from '@material-ui/styles'
 import { Grid } from '@mui/material'
 import { useNavigate } from 'react-router-dom';
+import Cart from './Cart';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 
 const pages = [
     {
@@ -311,6 +313,11 @@ export default function Banner() {
         </Box>
       )
   }
+
+  const [ cartDrawer, setCartDrawer] = useState(false)
+  const toggleCart = () => {
+    setCartDrawer(!cartDrawer)
+  }
     
   return (
     <Grid
@@ -349,7 +356,28 @@ export default function Banner() {
             </Typography>
             
             <UserLinks />
-
+            <IconButton 
+            aria-label="cart"
+            onClick={(e) => toggleCart(e)}
+            >
+              <Badge 
+              badgeContent={4} 
+              color="secondary"
+              anchorOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+              >
+                <ShoppingCartIcon />
+              </Badge>
+              <Drawer
+                anchor="right"
+                open={cartDrawer}
+                onClose={(e) => toggleCart(e)}
+              >
+                <Cart />
+              </Drawer>
+            </IconButton>
           </Toolbar>
         </Grid>
     </Grid>
