@@ -28,18 +28,22 @@ export default function Products() {
 
   return (
     <>
-      <Typography
-        variant='h5'
-        component='div'
-        textAlign="center"
-        sx={{mt: "3rem"}}
-      >
-        All Products
-      </Typography>
       <Grid
-        id="products"
+      id="products"
+      sx={{paddingTop: "6rem"}}
+      >
+        <Typography
+          variant='h5'
+          component='div'
+          textAlign="center"
+          sx={{m: "auto", width: "10%"}}
+        >
+          All Products
+        </Typography>
+      </Grid>
+      
+      <Grid
         container
-        alignItems="center"
         justifyContent="center"
       > 
         {products}

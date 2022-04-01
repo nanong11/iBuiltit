@@ -7,7 +7,9 @@ export default function ProductCard({productProp}) {
   const { productName, description, price } = productProp
   return (
     <Grid item>
-      <Card sx={{m: 1, maxWidth: 350}}>
+      <Card 
+      sx={{m: 3, maxWidth: 350, height: 650, display: "flex", flexDirection: "column", justifyContent: "space-between"}}
+      >
         <CardMedia
           component="img"
           image="/img/B450.jpg"
@@ -33,10 +35,12 @@ export default function ProductCard({productProp}) {
             ${price}
           </Typography>
         </CardContent>
-        <CardActions>
+        <CardActions
+        sx={{paddingLeft: "1rem", paddingRight: "1rem"}}
+        >
             <Button variant='contained' size='small' sx={{mr: "auto"}}>View</Button>
             <IconButton color='primary'><RemoveCircleOutlineIcon fontSize="large" /></IconButton>
-            <Typography sx={{ml: "1"}}>1</Typography>
+            <Typography sx={{m: "auto .5rem"}}>1</Typography>
             <IconButton color='primary'><AddCircleOutlineIcon fontSize="large" /></IconButton>
         </CardActions>
       </Card>
