@@ -1,30 +1,26 @@
-import { Grid, Typography } from '@mui/material'
+import { Backdrop, CircularProgress, Grid, Typography } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import ProductCard from '../components/ProductCard'
-import { useSelector, useDispatch } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { setProductsData } from '../redux/productSlice'
 
 export default function Products() {
-  const token = localStorage.getItem(`token`)
-  const user = useSelector((state => state.user.value))
   const [ products, setProducts ] = useState([])
- 
+  const [loading, setLoading] = useState(false)
   const dispatch = useDispatch()
   
   useEffect(() => {
-    if(user.isAdmin === false){
-      fetch(`https://mysterious-ocean-63835.herokuapp.com/api/products`, {
-        headers: {"Authorization": `Bearer ${token}`}
-      })
-      .then(response => response.json())
-      .then(response => {
-        dispatch(setProductsData(response))
-        setProducts(response.map(product => {
-          return <ProductCard key={product._id} productProp={product} />
-        }))
-      })
-    }
-  }, [user.isAdmin, dispatch, token])
+    setLoading(true)
+    fetch(`/api/products/isActive`)
+    .then(response => response.json())
+    .then(response => {
+      dispatch(setProductsData(response))
+      setProducts(response.map(product => {
+        return <ProductCard key={product._id} productProp={product} />
+      }))
+      setLoading(false)
+    })
+  }, [dispatch])
 
   return (
     <>
@@ -48,6 +44,12 @@ export default function Products() {
         justifyContent="center"
       > 
         {products}
+        <Backdrop
+          sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+          open={loading}
+        >
+          <CircularProgress color="primary" />
+        </Backdrop>
       </Grid>
     </>
   )

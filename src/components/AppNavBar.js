@@ -9,7 +9,7 @@ import CategoryRoundedIcon from '@mui/icons-material/CategoryRounded';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import Container from '@mui/material/Container';
 import MenuItem from '@mui/material/MenuItem';
-import { Badge, Button, Dialog, Drawer, Slide} from '@mui/material';
+import { Backdrop, Badge, Button, CircularProgress, Dialog, Drawer, Slide} from '@mui/material';
 import useScrollTrigger from '@mui/material/useScrollTrigger';
 import Login from '../pages/Login';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
@@ -19,6 +19,7 @@ import { useNavigate } from 'react-router-dom';
 import { setOrderData } from '../redux/orderSlice';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import Cart from './Cart';
+import { setOrderProductData } from '../redux/orderProductsSlice';
 
 const pages = [
   {
@@ -74,6 +75,7 @@ const userSettings = [
     path: "/logout"
   }
 ];
+
 function ShowAppBarOnScroll(props) {
   const { children, window } = props
 
@@ -89,44 +91,91 @@ function ShowAppBarOnScroll(props) {
     </Slide>
   )
 }
+
 export default function AppNavBar(props) {
   const token = localStorage.getItem(`token`)
-  const user = useSelector((state) => state.user.value)
-  const order = useSelector((state) => state.order.value)
+  const user = useSelector(state => state.user.value)
+  const orderProducts = useSelector(state=> state.orderProducts.value)
+  const [loading, setLoading] = useState(false)
+  const [cartDrawer, setCartDrawer] = useState(false)
   const dispatch = useDispatch()
   const navigate = useNavigate()
+  const order = useSelector(state => state.order.value)
+
+  useEffect(() => {
+    fetch(`/api/orderProducts`, {
+      headers: {"Authorization": `Bearer ${token}`}
+    })
+    .then(response => response.json())
+    .then(response => {
+      response.forEach(orderProduct => {
+        if(orderProduct.orderId === order._id){
+          dispatch(setOrderProductData(response))
+          setLoading(false)
+        }
+        if(orderProduct.quantity === 0){
+          fetch(`/api/orderProducts/${orderProduct._id}/delete`, {
+          method: "DELETE",
+          headers: {"Authorization": `Bearer ${token}`}
+          })
+          .then(response => response.json())
+          .then(response => {
+            setLoading(false)
+          })
+        }
+      })
+    })
+  }, [loading, token, dispatch, order._id])
 
   useEffect(() => {
     if(token){
-      fetch(`https://mysterious-ocean-63835.herokuapp.com/api/users/profile`, {
+      setLoading(true)
+      fetch(`/api/users/profile`, {
         headers: {"Authorization": `Bearer ${token}`}
       })
       .then(response => response.json())
       .then(response => {
         dispatch(setUserData(response))
+        setLoading(false)
       })
     }
   }, [token, dispatch])
 
   useEffect(() => {
     if(user.isAdmin === false){
-      fetch(`https://mysterious-ocean-63835.herokuapp.com/api/orders`, {
+      setLoading(true)
+      fetch(`/api/orders`, {
         headers: {"Authorization": `Bearer ${token}`}
       })
       .then(response => response.json())
       .then(response => {
-        response.map(order => {
+        let userOrder = response.map(order => {
           if(order.userId === user._id && order.complete === false){
             dispatch(setOrderData(order))
+            setLoading(false)
+            return order
           }
         })
+        if(userOrder.length === 0){
+          fetch(`/api/orders/create`, {
+            method: "POST",
+            headers: {
+              "Authorization": `Bearer ${token}`,
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              userId: user._id,
+            })
+          })
+          .then(response => response.json())
+          .then(response => {
+            dispatch(setOrderData(response))
+            setLoading(false)
+          }) 
+        }
       })
     }
-  }, [user._id, user.isAdmin, dispatch, token, ])
-
-  console.log(order)
-  
-  
+  }, [user._id, user.isAdmin, token, dispatch])
 
   const UserLinks = () => {
     const [anchorElUser, setAnchorElUser] = useState(null);
@@ -147,7 +196,6 @@ export default function AppNavBar(props) {
     }
     
     return(
-      
       <Box sx={{ flexGrow: 0 }}>
           {
             user.isAdmin === false && token
@@ -345,11 +393,12 @@ export default function AppNavBar(props) {
     )
   }
 
-  const [ cartDrawer, setCartDrawer] = useState(false)
   const toggleCart = () => {
     setCartDrawer(!cartDrawer)
   }
-  
+  const handleLogoClick = () => {
+    navigate("/")
+  }
   return(
     <ShowAppBarOnScroll {...props}>
       <AppBar>
@@ -359,7 +408,8 @@ export default function AppNavBar(props) {
             <Typography
               variant="h6"
               component="div"
-              sx={{ mr: 2, display: { xs: 'none', md: 'block'} }}
+              sx={{ mr: 2, cursor: "pointer", display: { xs: 'none', md: 'block'} }}
+              onClick={(e) => handleLogoClick(e)}
             >
               iBuiltit
             </Typography>
@@ -369,7 +419,8 @@ export default function AppNavBar(props) {
               variant="h6"
               noWrap
               component="div"
-              sx={{ mr: 'auto', display: { md: 'none' } }}
+              sx={{ mr: 'auto', cursor: "pointer", display: { md: 'none' } }}
+              onClick={(e) => handleLogoClick(e)}
             >
               iBuiltit
             </Typography>
@@ -379,7 +430,7 @@ export default function AppNavBar(props) {
             onClick={(e) => toggleCart(e)}
             >
               <Badge 
-              badgeContent={4} 
+              badgeContent={orderProducts.length} 
               color="secondary"
               anchorOrigin={{
                 vertical: 'top',
@@ -396,6 +447,12 @@ export default function AppNavBar(props) {
                 <Cart />
               </Drawer>
             </IconButton>
+            <Backdrop
+              sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+              open={loading}
+            >
+              <CircularProgress color="primary" />
+            </Backdrop>            
           </Toolbar>
         </Container>
       </AppBar>

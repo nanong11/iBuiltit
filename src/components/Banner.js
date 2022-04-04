@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
@@ -8,15 +8,16 @@ import CategoryRoundedIcon from '@mui/icons-material/CategoryRounded';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
-import { Badge, Dialog, Drawer } from '@mui/material';
+import { Backdrop, Badge, CircularProgress, Dialog, Drawer } from '@mui/material';
 import Login from '../pages/Login';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { makeStyles } from '@material-ui/styles'
 import { Grid } from '@mui/material'
 import { useNavigate } from 'react-router-dom';
 import Cart from './Cart';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import { setUserData } from '../redux/userSlice';
 
 const pages = [
     {
@@ -92,11 +93,29 @@ const useStyles = makeStyles({
 })
 
 export default function Banner() {
-  const classes = useStyles()
   const token = localStorage.getItem(`token`)
+  const classes = useStyles()
   const user = useSelector( (state) => state.user.value)
+  const [cartDrawer, setCartDrawer] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const orderProducts = useSelector(state=> state.orderProducts.value)
   const navigate = useNavigate()
+  const dispatch = useDispatch()
   
+  useEffect(() => {
+    if(token){
+      setLoading(true)
+      fetch(`/api/users/profile`, {
+        headers: {"Authorization": `Bearer ${token}`}
+      })
+      .then(response => response.json())
+      .then(response => {
+        dispatch(setUserData(response))
+        setLoading(false)
+      })
+    }
+  }, [token, dispatch])
+
   const UserLinks = () => {
     const [anchorElUser, setAnchorElUser] = useState(null);
     const [openLoginDialog, setOpenLoginDialog] = useState(false);
@@ -314,11 +333,14 @@ export default function Banner() {
       )
   }
 
-  const [ cartDrawer, setCartDrawer] = useState(false)
   const toggleCart = () => {
     setCartDrawer(!cartDrawer)
   }
-    
+
+  const handleLogoClick = () => {
+    navigate("/")
+  }
+
   return (
     <Grid
       container
@@ -336,7 +358,8 @@ export default function Banner() {
               variant="h6"
               component="div"
               color="white"
-              sx={{ mr: 2, display: { xs: 'none', md: 'block'} }}
+              sx={{ mr: 2, cursor: "pointer", display: { xs: 'none', md: 'block'} }}
+              onClick={(e) => handleLogoClick(e)}
             >
               iBuiltit
             </Typography>
@@ -349,8 +372,9 @@ export default function Banner() {
               variant="h6"
               noWrap
               component="a"
-              sx={{ mr: 'auto', display: { md: 'none' } }}
+              sx={{ mr: 'auto', cursor: "pointer", display: { md: 'none' } }}
               color="white"
+              onClick={(e) => handleLogoClick(e)}
             >
               iBuiltit
             </Typography>
@@ -361,7 +385,7 @@ export default function Banner() {
             onClick={(e) => toggleCart(e)}
             >
               <Badge 
-              badgeContent={4} 
+              badgeContent={orderProducts.length} 
               color="secondary"
               anchorOrigin={{
                 vertical: 'top',
@@ -378,6 +402,12 @@ export default function Banner() {
                 <Cart />
               </Drawer>
             </IconButton>
+            <Backdrop
+              sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+              open={loading}
+            >
+              <CircularProgress color="primary" />
+            </Backdrop>
           </Toolbar>
         </Grid>
     </Grid>
