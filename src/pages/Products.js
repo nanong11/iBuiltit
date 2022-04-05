@@ -26,7 +26,7 @@ export default function Products() {
     <>
       <Grid
       container
-      id="products"
+      id="all"
       sx={{paddingTop: "6rem"}}
       >
         <Typography

@@ -3,6 +3,8 @@ import React, { useEffect, useState } from 'react'
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { makeStyles } from '@material-ui/styles'
+import { setOrderProductData } from '../redux/orderProductsSlice';
+import { useDispatch, useSelector } from 'react-redux';
 
 const useStyles = makeStyles({
     cart: {
@@ -20,11 +22,40 @@ const useStyles = makeStyles({
 })
 
 export default function CartItemCard({orderProductProp}) {
-    const {productId, quantity, subTotal} = orderProductProp
+    const {_id, productId, quantity, subTotal} = orderProductProp
     const token = localStorage.getItem(`token`)
     const [product, setProduct] = useState({})
     const classes = useStyles()
+    const [loading, setLoading] = useState(false)
+    const dispatch = useDispatch()
+    const order = useSelector(state => state.order.value)
+    const [deductIconIsDisabled, setDeductIconIsDisabled] = useState(true)
 
+    const fetchOrderProducts = () =>{
+        fetch(`https://mysterious-ocean-63835.herokuapp.com/api/orderProducts`, {
+          headers: {"Authorization": `Bearer ${token}`}
+        })
+        .then(response => response.json())
+        .then(response => {
+          response.forEach(orderProduct => {
+            if(orderProduct.orderId === order._id){
+              dispatch(setOrderProductData(response))
+              setLoading(false)
+            }
+            if(orderProduct.quantity === 0){
+              fetch(`https://mysterious-ocean-63835.herokuapp.com/api/orderProducts/${orderProduct._id}/delete`, {
+              method: "DELETE",
+              headers: {"Authorization": `Bearer ${token}`}
+              })
+              .then(response => response.json())
+              .then(response => {
+              fetchOrderProducts()
+              })
+            }
+          })
+        })
+      }
+      
     useEffect(() => {
         fetch(`/api/products/${productId}/`, {
             method: "POST",
@@ -35,6 +66,36 @@ export default function CartItemCard({orderProductProp}) {
             setProduct(response)
         })
     }, [productId, token])
+
+    useEffect(() => {
+        if(quantity > 0){
+          setDeductIconIsDisabled(false)
+        }else{
+          setDeductIconIsDisabled(true)
+        }
+      }, [quantity])
+
+    const handleAddQuantity = () => {
+        fetch(`/api/orderProducts/${_id}/addQuantity`, {
+            method: "PUT",
+            headers: {"Authorization": `Bearer ${token}`}
+        })
+        .then(response => response.json())
+        .then(response => {
+            fetchOrderProducts()
+        })
+    }
+    
+    const handleDeductQuantity = () => {
+        fetch(`/api/orderProducts/${_id}/deductQuantity`, {
+            method: "PUT",
+            headers: {"Authorization": `Bearer ${token}`}
+        })
+        .then(response => response.json())
+        .then(response => {
+            fetchOrderProducts()
+        })
+    }
             
   return (
     <Grid
@@ -55,14 +116,17 @@ export default function CartItemCard({orderProductProp}) {
             sx={{display: "flex", px: 5}}
             >
                 <Box sx={{flexGrow: 1, display: "flex"}}>
-                    <IconButton 
+                    <IconButton
+                    disabled={deductIconIsDisabled}
                     color='primary'
+                    onClick={(e) => handleDeductQuantity(e)}
                     >
                         <RemoveCircleOutlineIcon fontSize="medium" />
                     </IconButton>
                     <Typography sx={{m: "auto .5rem", fontSize: "1.3rem"}}>{quantity}</Typography>
                     <IconButton 
                     color='primary'
+                    onClick={(e) => handleAddQuantity(e)}
                     >
                         <AddCircleOutlineIcon fontSize="medium" />
                     </IconButton>

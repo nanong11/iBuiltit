@@ -5,6 +5,8 @@ import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import { useDispatch, useSelector } from 'react-redux';
 import { setOrderProductData } from '../redux/orderProductsSlice';
 import Login from '../pages/Login';
+import { useNavigate } from 'react-router-dom';
+import ProductView from '../pages/ProductView';
 
 export default function ProductCard({productProp}) {
   const token = localStorage.getItem(`token`)
@@ -17,6 +19,7 @@ export default function ProductCard({productProp}) {
   const [deductIconIsDisabled, setDeductIconIsDisabled] = useState(true)
   const [openLoginDialog, setOpenLoginDialog] = useState(false);
   const dispatch = useDispatch()
+  const navigate = useNavigate()
   
   const fetchOrderProducts = () =>{
     fetch(`https://mysterious-ocean-63835.herokuapp.com/api/orderProducts`, {
@@ -160,7 +163,14 @@ export default function ProductCard({productProp}) {
         <CardActions
           sx={{paddingLeft: "1rem", paddingRight: "1rem"}}
         >
-          <Button variant='contained' size='small' sx={{mr: "auto"}}>View</Button>
+          <Button
+          variant='contained'
+          size='small' 
+          sx={{mr: "auto"}}
+          href={`/${_id}#productView`}
+          >
+            View
+          </Button>
           <IconButton
           disabled={deductIconIsDisabled}
           color='primary'

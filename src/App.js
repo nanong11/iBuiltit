@@ -11,6 +11,7 @@ import WithoutAppNavBar from "./components/WithoutAppNavBar";
 import Signup from "./pages/Signup";
 import Logout from "./pages/Logout";
 import Products from "./pages/Products";
+import ProductView from "./pages/ProductView";
 
 const theme = createTheme({
   palette: {
@@ -42,6 +43,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route exact path="/products" element={<Products />} />
           <Route path="/logout" element={<Logout />} />
+          <Route path=":productId" element={<ProductView />} />
         </Route>
       </Routes>
     </BrowserRouter>

@@ -25,7 +25,7 @@ const pages = [
   {
     pageName: "All Products",
     path: "/products",
-    hashPath: "#products"
+    hashPath: "#all"
   },
   {
     pageName: 'Processor',
@@ -396,6 +396,7 @@ export default function AppNavBar(props) {
   const toggleCart = () => {
     setCartDrawer(!cartDrawer)
   }
+
   const handleLogoClick = () => {
     navigate("/")
   }
@@ -441,8 +442,10 @@ export default function AppNavBar(props) {
               </Badge>
               <Drawer
                 anchor="right"
+                ModalProps={{
+                  keepMounted: true
+                }}
                 open={cartDrawer}
-                onClose={(e) => toggleCart(e)}
               >
                 <Cart />
               </Drawer>

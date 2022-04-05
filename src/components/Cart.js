@@ -28,7 +28,6 @@ export default function Cart() {
     const [totalPrice, setTotalPrice] = useState(order.total)
     const [loading, setLoading] = useState(false)
     const [product, setProduct] = useState()
-    
     const classes = useStyles()
     const dispatch = useDispatch()
 

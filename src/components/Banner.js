@@ -23,7 +23,7 @@ const pages = [
     {
       pageName: "All Products",
       path: "/products",
-      hashPath: "#products"
+      hashPath: "#all"
     },
     {
       pageName: 'Processor',
