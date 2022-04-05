@@ -57,7 +57,7 @@ export default function CartItemCard({orderProductProp}) {
       }
       
     useEffect(() => {
-        fetch(`/api/products/${productId}/`, {
+        fetch(`https://mysterious-ocean-63835.herokuapp.com/api/products/${productId}/`, {
             method: "POST",
             headers: {"Authorization": `Bearer ${token}`,}
         })
@@ -76,7 +76,7 @@ export default function CartItemCard({orderProductProp}) {
       }, [quantity])
 
     const handleAddQuantity = () => {
-        fetch(`/api/orderProducts/${_id}/addQuantity`, {
+        fetch(`https://mysterious-ocean-63835.herokuapp.com/api/orderProducts/${_id}/addQuantity`, {
             method: "PUT",
             headers: {"Authorization": `Bearer ${token}`}
         })
@@ -87,7 +87,7 @@ export default function CartItemCard({orderProductProp}) {
     }
     
     const handleDeductQuantity = () => {
-        fetch(`/api/orderProducts/${_id}/deductQuantity`, {
+        fetch(`https://mysterious-ocean-63835.herokuapp.com/api/orderProducts/${_id}/deductQuantity`, {
             method: "PUT",
             headers: {"Authorization": `Bearer ${token}`}
         })

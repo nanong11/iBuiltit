@@ -105,7 +105,7 @@ export default function Banner() {
   useEffect(() => {
     if(token){
       setLoading(true)
-      fetch(`/api/users/profile`, {
+      fetch(`https://mysterious-ocean-63835.herokuapp.com/api/users/profile`, {
         headers: {"Authorization": `Bearer ${token}`}
       })
       .then(response => response.json())

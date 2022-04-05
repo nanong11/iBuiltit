@@ -49,7 +49,7 @@ export default function ProductView() {
     useEffect(() =>{
         if(productId){
             setLoading(true)
-            fetch(`/api/products/${productId}`, {
+            fetch(`https://mysterious-ocean-63835.herokuapp.com/api/products/${productId}`, {
                 method: "POST",
                 headers: {"Authorization": `Bearer ${token}`}
             })
@@ -79,7 +79,7 @@ export default function ProductView() {
             let orderProductId = orderProducts.filter(orderProduct => orderProduct.productId === productId ? orderProduct : null)
             if(orderProductIdArr.indexOf(productId) !== -1){
               setLoading(true)
-              fetch(`/api/orderProducts/${orderProductId[0]._id}/addQuantity`, {
+              fetch(`https://mysterious-ocean-63835.herokuapp.com/api/orderProducts/${orderProductId[0]._id}/addQuantity`, {
                 method: "PUT",
                 headers: {"Authorization": `Bearer ${token}`}
                 })
@@ -114,7 +114,7 @@ export default function ProductView() {
     const handleDeductQuantity = () => {
         setLoading(true)
         let orderProduct = orderProducts.filter(orderProduct => orderProduct.productId === productId ? orderProduct : null)
-        fetch(`/api/orderProducts/${orderProduct[0]._id}/deductQuantity`, {
+        fetch(`https://mysterious-ocean-63835.herokuapp.com/api/orderProducts/${orderProduct[0]._id}/deductQuantity`, {
           method: "PUT",
           headers: {"Authorization": `Bearer ${token}`}
           })

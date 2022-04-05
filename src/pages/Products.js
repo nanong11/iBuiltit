@@ -11,7 +11,7 @@ export default function Products() {
   
   useEffect(() => {
     setLoading(true)
-    fetch(`/api/products/isActive`)
+    fetch(`https://mysterious-ocean-63835.herokuapp.com/api/products/isActive`)
     .then(response => response.json())
     .then(response => {
       dispatch(setProductsData(response))

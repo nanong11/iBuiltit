@@ -107,7 +107,7 @@ export default function ProductCard({productProp}) {
   const handleDeductQuantity = () => {
     setLoading(true)
     let orderProduct = orderProducts.filter(orderProduct => orderProduct.productId === _id ? orderProduct : null)
-    fetch(`/api/orderProducts/${orderProduct[0]._id}/deductQuantity`, {
+    fetch(`https://mysterious-ocean-63835.herokuapp.com/api/orderProducts/${orderProduct[0]._id}/deductQuantity`, {
       method: "PUT",
       headers: {"Authorization": `Bearer ${token}`}
       })

@@ -103,7 +103,7 @@ export default function AppNavBar(props) {
   const order = useSelector(state => state.order.value)
 
   useEffect(() => {
-    fetch(`/api/orderProducts`, {
+    fetch(`https://mysterious-ocean-63835.herokuapp.com/api/orderProducts`, {
       headers: {"Authorization": `Bearer ${token}`}
     })
     .then(response => response.json())
@@ -114,7 +114,7 @@ export default function AppNavBar(props) {
           setLoading(false)
         }
         if(orderProduct.quantity === 0){
-          fetch(`/api/orderProducts/${orderProduct._id}/delete`, {
+          fetch(`https://mysterious-ocean-63835.herokuapp.com/api/orderProducts/${orderProduct._id}/delete`, {
           method: "DELETE",
           headers: {"Authorization": `Bearer ${token}`}
           })
@@ -130,7 +130,7 @@ export default function AppNavBar(props) {
   useEffect(() => {
     if(token){
       setLoading(true)
-      fetch(`/api/users/profile`, {
+      fetch(`https://mysterious-ocean-63835.herokuapp.com/api/users/profile`, {
         headers: {"Authorization": `Bearer ${token}`}
       })
       .then(response => response.json())
@@ -144,7 +144,7 @@ export default function AppNavBar(props) {
   useEffect(() => {
     if(user.isAdmin === false){
       setLoading(true)
-      fetch(`/api/orders`, {
+      fetch(`https://mysterious-ocean-63835.herokuapp.com/api/orders`, {
         headers: {"Authorization": `Bearer ${token}`}
       })
       .then(response => response.json())
