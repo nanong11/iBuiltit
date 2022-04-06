@@ -39,7 +39,7 @@ export default function AdminUsers() {
       isAdmin = newData.target.value
     }
 
-    fetch(`http://localhost:3011/api/users/${oldData.id}/updateByAdmin`, {
+    fetch(`https://mysterious-ocean-63835.herokuapp.com/api/users/${oldData.id}/updateByAdmin`, {
       method: "PUT",
       headers: {
         "Authorization": `Bearer ${token}`,
@@ -58,11 +58,7 @@ export default function AdminUsers() {
     { field: "firstName", headerName: 'First Name', width: 150, editable: true },
     { field: "lastName", headerName: 'Last Name', width: 150, editable: true },
     { field: "email", headerName: 'Email', width: 150, editable: true },
-    { field: "isAdmin",
-      headerName: 'isAdmin', 
-      width: 150,
-      editable: true
-    },
+    { field: "isAdmin", headerName: 'isAdmin', width: 150, editable: true},
     { field: "createdAt", headerName: 'Date Created', width: 200 },
     { field: "updatedAt", headerName: 'Date Updated', width: 200 },
     { field: "lastLoginDate", headerName: 'Last Login', width: 200 },

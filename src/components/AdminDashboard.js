@@ -1,7 +1,7 @@
 import React from 'react'
 import Drawer from '@mui/material/Drawer';
 import { useSelector } from 'react-redux';
-import { Typography } from '@mui/material';
+import { Grid, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import { useNavigate } from 'react-router-dom';
 
@@ -12,6 +12,10 @@ export default function AdminDashboard() {
 
     const handleClickUser = () => {
         navigate(`/admin/users`)
+    }
+
+    const handleClickProducts = () => {
+        navigate(`/admin/products`)
     }
     
   return (
@@ -58,6 +62,7 @@ export default function AdminDashboard() {
                 variant='h6'
                 component="a"
                 sx={{fontSize: "1.3rem", cursor: "pointer"}}
+                onClick={(e) => handleClickProducts(e)}
                 >
                     Products
                 </Typography>
