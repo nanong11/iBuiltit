@@ -8,7 +8,7 @@ import Login from '../pages/Login';
 
 export default function ProductCard({productProp}) {
   const token = localStorage.getItem(`token`)
-  const { _id, productName, description, price } = productProp
+  const { _id, productName, productImg, description, price } = productProp
   const order = useSelector(state => state.order.value)
   const orderProducts = useSelector(state=> state.orderProducts.value)
   const [quantity, setQuantity] = useState(0)

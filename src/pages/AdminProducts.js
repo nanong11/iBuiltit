@@ -1,9 +1,10 @@
 import { Grid, Paper, Typography } from '@mui/material'
-import { DataGrid } from '@mui/x-data-grid'
+import { DataGrid, GridActionsCellItem } from '@mui/x-data-grid'
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import AdminDashboard from '../components/AdminDashboard'
+import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 
 export default function AdminProducts() {
     const token = localStorage.getItem(`token`)
@@ -67,6 +68,21 @@ export default function AdminProducts() {
         .then(response => navigate(`/admin/products`))
     }
 
+    const handleDeleteClick = (id) => {
+        fetch(`https://mysterious-ocean-63835.herokuapp.com/api/products/${id}/delete`, {
+            method: "DELETE",
+            headers: {"Authorization": `Bearer ${token}`},
+        })
+        .then(response => response.json())
+        .then(response => {
+            fetch(`https://mysterious-ocean-63835.herokuapp.com/api/products`, {
+            headers: {"Authorization": `Bearer ${token}`}
+            })
+            .then(response => response.json())
+            .then(response => setProducts(response))
+        })
+    }
+
     const columns = [
       { field: "_id", headerName: "ProductId", width: 150 },
       { field: "productName", headerName: 'Product Name', width: 300, editable: true },
@@ -77,6 +93,18 @@ export default function AdminProducts() {
       { field: "isActive", headerName: 'isActive', width: 100, editable: true },
       { field: "createdAt", headerName: 'Date Created', width: 200 },
       { field: "updatedAt", headerName: 'Date Updated', width: 200 },
+      { field: "actions", type: "actions", headerName: 'Delete', width: 100, cellClassName: 'actions',
+      getActions: ({ id }) => {
+        return [
+          <GridActionsCellItem
+            icon={<DeleteIcon />}
+            label="Delete"
+            color="warning"
+            onClick={(e) => handleDeleteClick(id)}
+          />,
+        ];
+      },
+      },
     ];
 
   return (

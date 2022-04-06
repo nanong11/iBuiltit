@@ -12,6 +12,26 @@ export default function AdminOrderProducts() {
     const navigate = useNavigate()
 
     useEffect(() => {
+      if(user.isAdmin){
+        fetch(`https://mysterious-ocean-63835.herokuapp.com/api/orderProducts`, {
+          headers: {"Authorization": `Bearer ${token}`}
+        })
+        .then(response => response.json())
+        .then(response => {
+          response.forEach(orderProduct => {
+            if(orderProduct.quantity === 0){
+              fetch(`https://mysterious-ocean-63835.herokuapp.com/api/orderProducts/${orderProduct._id}/delete`, {
+              method: "DELETE",
+              headers: {"Authorization": `Bearer ${token}`}
+              })
+              .then(response => response.json())
+            }
+          })
+        })
+      }
+    }, [token, user.isAdmin])
+
+    useEffect(() => {
         if(user.isAdmin && token){
           fetch(`https://mysterious-ocean-63835.herokuapp.com/api/orderProducts`, {
             headers: {"Authorization": `Bearer ${token}`}
