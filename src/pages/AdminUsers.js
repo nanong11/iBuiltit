@@ -1,4 +1,4 @@
-import { Grid, Typography } from '@mui/material';
+import { Grid, Paper, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react'
 import AdminDashboard from '../components/AdminDashboard'
 import { DataGrid } from '@mui/x-data-grid';
@@ -75,13 +75,18 @@ export default function AdminUsers() {
             item
             sx={{ ml: "310px", mr: "10px", mt: "5rem"}}
             >
-              <Typography
-              variant='h2'
-              component="h2"
-              sx={{fontSize: "2rem", textAlign: "center"}}
-              >
-                DASHBOARD
-              </Typography>
+               <Paper
+                sx={{height: "5rem", width: "80%", mx: "auto"}}
+                elevation={0}
+                >
+                    <Typography
+                    variant='h2'
+                    component="div"
+                    sx={{fontSize: "2rem", fontWeight: 700, textAlign: "center", pt: "1rem"}}
+                    >
+                        USERS TABLE
+                    </Typography>
+                </Paper>
             </Grid>
             <Grid
             item

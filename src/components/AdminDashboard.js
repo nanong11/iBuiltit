@@ -10,6 +10,9 @@ export default function AdminDashboard() {
     const drawerWidth = 300;
     const navigate = useNavigate()
 
+    const handleClickSummary =() => {
+        navigate(`/admin`)
+    }
     const handleClickUser = () => {
         navigate(`/admin/users`)
     }
@@ -50,6 +53,15 @@ export default function AdminDashboard() {
             <Box
             sx={{mt: "1rem", mx: "2rem", display: "flex", flexDirection: "column", gap: "1rem", flexGrow: 1}}
             >
+                <Typography
+                variant='h6'
+                component="a"
+                sx={{fontSize: "1.3rem", cursor: "pointer"}}
+                onClick={(e) => handleClickSummary(e)}
+                >
+                    SUMMARY
+                </Typography>
+
                 <Typography
                 variant='h6'
                 component="a"

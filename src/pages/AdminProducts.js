@@ -1,4 +1,4 @@
-import { Grid, Typography } from '@mui/material'
+import { Grid, Paper, Typography } from '@mui/material'
 import { DataGrid } from '@mui/x-data-grid'
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
@@ -91,13 +91,18 @@ export default function AdminProducts() {
             item
             sx={{ ml: "310px", mr: "10px", mt: "5rem"}}
             >
-                <Typography
-                variant='h2'
-                component="h2"
-                sx={{fontSize: "2rem", textAlign: "center"}}
+                <Paper
+                sx={{height: "5rem", width: "80%", mx: "auto"}}
+                elevation={0}
                 >
-                    DASHBOARD
-                </Typography>
+                    <Typography
+                    variant='h2'
+                    component="div"
+                    sx={{fontSize: "2rem", fontWeight: 700, textAlign: "center", pt: "1rem"}}
+                    >
+                        PRODUCTS TABLE
+                    </Typography>
+                </Paper>
             </Grid>
 
             <Grid
