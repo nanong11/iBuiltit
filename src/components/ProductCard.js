@@ -69,7 +69,7 @@ export default function ProductCard({productProp}) {
       let orderProductId = orderProducts.filter(orderProduct => orderProduct.productId === _id ? orderProduct : null)
       if(orderProductIdArr.indexOf(_id) !== -1){
         setLoading(true)
-        fetch(`/api/orderProducts/${orderProductId[0]._id}/addQuantity`, {
+        fetch(`https://mysterious-ocean-63835.herokuapp.com/api/orderProducts/${orderProductId[0]._id}/addQuantity`, {
           method: "PUT",
           headers: {"Authorization": `Bearer ${token}`}
           })
@@ -79,7 +79,7 @@ export default function ProductCard({productProp}) {
           })        
       }else if(orderProductIdArr.indexOf(_id) === -1){
         setLoading(true)
-        fetch(`/api/orderProducts/create`, {
+        fetch(`https://mysterious-ocean-63835.herokuapp.com/api/orderProducts/create`, {
           method: "POST",
           headers: {
             "Authorization": `Bearer ${token}`,
