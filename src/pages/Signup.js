@@ -2,7 +2,6 @@ import { Button, FormControl, Grid, TextField, Typography } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { makeStyles } from '@material-ui/styles'
 import { useNavigate } from "react-router-dom"
-import AppBarLogo from '../components/AppBarLogo'
 
 /* Custom Styles */
 const useStyles = makeStyles({
@@ -234,7 +233,7 @@ export default function Signup() {
 
   return (
     <>
-      <AppBarLogo />
+      
       <Grid 
       container
       spacing={0}

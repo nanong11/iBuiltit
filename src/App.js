@@ -12,6 +12,8 @@ import Signup from "./pages/Signup";
 import Logout from "./pages/Logout";
 import Products from "./pages/Products";
 import ProductView from "./pages/ProductView";
+import AdminDashboard from "./components/AdminDashboard";
+import AdminUsers from "./pages/AdminUsers";
 
 const theme = createTheme({
   palette: {
@@ -38,6 +40,8 @@ function App() {
       <Routes>
         <Route element={<WithoutAppNavBar />}>
           <Route path="/signup" element={<Signup />} />
+          <Route path="/admin" element={<AdminDashboard/>} />
+          <Route path="/admin/users" element={<AdminUsers/>} />
         </Route>
         <Route element={<WithAppNavBar />}>
           <Route path="/" element={<Home />} />

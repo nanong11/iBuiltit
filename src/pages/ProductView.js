@@ -3,7 +3,7 @@ import { Box } from '@mui/system'
 import React, { useEffect, useState } from 'react'
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { setOrderProductData } from '../redux/orderProductsSlice';
 import Login from './Login';
@@ -20,6 +20,14 @@ export default function ProductView() {
     const dispatch = useDispatch()
     const [orderProductIdArr, setOrderProductIdArr] = useState([])
     const [openLoginDialog, setOpenLoginDialog] = useState(false);
+    const user = useSelector(state => state.user.value)
+    const navigate = useNavigate()
+
+    useEffect(() => {
+      if(user.isAdmin){
+        navigate(`/admin`)
+      }
+    }, [user.isAdmin, navigate])
 
     const fetchOrderProducts = () =>{
         fetch(`https://mysterious-ocean-63835.herokuapp.com/api/orderProducts`, {

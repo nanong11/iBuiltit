@@ -103,29 +103,31 @@ export default function AppNavBar(props) {
   const order = useSelector(state => state.order.value)
 
   useEffect(() => {
-    fetch(`https://mysterious-ocean-63835.herokuapp.com/api/orderProducts`, {
-      headers: {"Authorization": `Bearer ${token}`}
-    })
-    .then(response => response.json())
-    .then(response => {
-      response.forEach(orderProduct => {
-        if(orderProduct.orderId === order._id){
-          dispatch(setOrderProductData(response))
-          setLoading(false)
-        }
-        if(orderProduct.quantity === 0){
-          fetch(`https://mysterious-ocean-63835.herokuapp.com/api/orderProducts/${orderProduct._id}/delete`, {
-          method: "DELETE",
-          headers: {"Authorization": `Bearer ${token}`}
-          })
-          .then(response => response.json())
-          .then(response => {
-            setLoading(false)
-          })
-        }
+    if(user.isAdmin === false){
+      fetch(`https://mysterious-ocean-63835.herokuapp.com/api/orderProducts`, {
+        headers: {"Authorization": `Bearer ${token}`}
       })
-    })
-  }, [loading, token, dispatch, order._id])
+      .then(response => response.json())
+      .then(response => {
+        response.forEach(orderProduct => {
+          if(orderProduct.orderId === order._id){
+            dispatch(setOrderProductData(response))
+            setLoading(false)
+          }
+          if(orderProduct.quantity === 0){
+            fetch(`https://mysterious-ocean-63835.herokuapp.com/api/orderProducts/${orderProduct._id}/delete`, {
+            method: "DELETE",
+            headers: {"Authorization": `Bearer ${token}`}
+            })
+            .then(response => response.json())
+            .then(response => {
+              setLoading(false)
+            })
+          }
+        })
+      })
+    }
+  }, [loading, token, dispatch, order._id, user.isAdmin])
 
   useEffect(() => {
     if(token){

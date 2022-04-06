@@ -26,7 +26,6 @@ export default function CartItemCard({orderProductProp}) {
     const token = localStorage.getItem(`token`)
     const [product, setProduct] = useState({})
     const classes = useStyles()
-    const [loading, setLoading] = useState(false)
     const dispatch = useDispatch()
     const order = useSelector(state => state.order.value)
     const [deductIconIsDisabled, setDeductIconIsDisabled] = useState(true)
@@ -40,7 +39,6 @@ export default function CartItemCard({orderProductProp}) {
           response.forEach(orderProduct => {
             if(orderProduct.orderId === order._id){
               dispatch(setOrderProductData(response))
-              setLoading(false)
             }
             if(orderProduct.quantity === 0){
               fetch(`https://mysterious-ocean-63835.herokuapp.com/api/orderProducts/${orderProduct._id}/delete`, {

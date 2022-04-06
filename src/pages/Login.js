@@ -131,9 +131,14 @@ export default function Login() {
                 }
               })
               .then(response => response.json())
-              .then(response => {
-                dispatch(setUserData(response))
-                navigate(`/`)
+              .then(userData => {
+                if(userData.isAdmin === false){
+                  dispatch(setUserData(userData))
+                  navigate(`/`)
+                }else if(userData.isAdmin === true){
+                  dispatch(setUserData(userData))
+                  navigate(`/admin`)
+                }
               })
             }else{
               setPasswordError(true)
