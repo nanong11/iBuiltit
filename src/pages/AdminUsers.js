@@ -58,7 +58,7 @@ export default function AdminUsers() {
     { field: "firstName", headerName: 'First Name', width: 150, editable: true },
     { field: "lastName", headerName: 'Last Name', width: 150, editable: true },
     { field: "email", headerName: 'Email', width: 150, editable: true },
-    { field: "isAdmin", headerName: 'isAdmin', width: 150, editable: true},
+    { field: "isAdmin", headerName: 'isAdmin', width: 100, editable: true},
     { field: "createdAt", headerName: 'Date Created', width: 200 },
     { field: "updatedAt", headerName: 'Date Updated', width: 200 },
     { field: "lastLoginDate", headerName: 'Last Login', width: 200 },

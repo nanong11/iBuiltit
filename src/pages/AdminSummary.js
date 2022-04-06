@@ -9,6 +9,8 @@ export default function AdminSummary() {
     const user = useSelector(state => state.user.value)
     const [users, setUsers] = useState([])
     const [products, setProducts] = useState([])
+    const [orderProducts, setOrderProducts] = useState([])
+    const [orders, setOrders] = useState([])
     const navigate = useNavigate()
 
     useEffect(() => {
@@ -36,6 +38,30 @@ export default function AdminSummary() {
         }
     }, [user.isAdmin, token, navigate])
 
+    useEffect(() => {
+        if(user.isAdmin && token){
+          fetch(`https://mysterious-ocean-63835.herokuapp.com/api/orderProducts`, {
+            headers: {"Authorization": `Bearer ${token}`}
+          })
+          .then(response => response.json())
+          .then(response => setOrderProducts(response))
+        }else{
+          navigate(`/`)
+        }
+    }, [user.isAdmin, token, navigate])
+
+    useEffect(() => {
+        if(user.isAdmin && token){
+          fetch(`https://mysterious-ocean-63835.herokuapp.com/api/orders`, {
+            headers: {"Authorization": `Bearer ${token}`}
+          })
+          .then(response => response.json())
+          .then(response => setOrders(response))
+        }else{
+          navigate(`/`)
+        }
+    }, [user.isAdmin, token, navigate])
+
     const handleClickUser = () => {
         navigate(`/admin/users`)
     }
@@ -43,7 +69,14 @@ export default function AdminSummary() {
     const handleClickProducts = () => {
         navigate(`/admin/products`)
     }
+    
+    const handleClickOrderProducts = () => {
+        navigate(`/admin/orderProducts`)
+    }
 
+    const handleClickOrders = () => {
+        navigate(`/admin/orders`)
+    }
   return (
     <>
         <AdminDashboard />
@@ -79,7 +112,7 @@ export default function AdminSummary() {
                 md={8}
                 >
                     <Paper
-                    sx={{cursor: "pointer"}}
+                    sx={{cursor: "pointer", width: "15rem", height: "8rem", p: "1rem", mx: "auto"}}
                     onClick={(e) => handleClickUser(e)}
                     >
                         <Typography
@@ -104,7 +137,10 @@ export default function AdminSummary() {
                 xs={12}
                 md={8}
                 >
-                    <Paper>
+                    <Paper
+                    sx={{cursor: "pointer", width: "15rem", height: "8rem", p: "1rem", mx: "auto"}}
+                    onClick={(e) => handleClickProducts(e)}
+                    >
                         <Typography
                         variant='h3'
                         component="h3"
@@ -127,7 +163,10 @@ export default function AdminSummary() {
                 xs={12}
                 md={8}
                 >
-                    <Paper>
+                    <Paper
+                    sx={{cursor: "pointer", width: "15rem", height: "10rem", p: "1rem", mx: "auto"}}
+                    onClick={(e) => handleClickOrderProducts(e)}
+                    >
                         <Typography
                         variant='h3'
                         component="h3"
@@ -140,7 +179,7 @@ export default function AdminSummary() {
                         component="p"
                         sx={{fontSize: "2rem", textAlign: "center"}}
                         >
-                            1
+                            {orderProducts.length}
                         </Typography>
                     </Paper>
                 </Grid>
@@ -150,11 +189,15 @@ export default function AdminSummary() {
                 xs={12}
                 md={8}
                 >
-                    <Paper>
+                    <Paper
+                    sx={{cursor: "pointer", width: "15rem", height: "8rem", p: "1rem", mx: "auto"}}
+                    onClick={(e) => handleClickOrders(e)}
+                    >
                         <Typography
                         variant='h3'
                         component="h3"
                         sx={{fontSize: "2rem", textAlign: "center"}}
+                        onClick={(e) => handleClickOrders(e)}
                         >
                             ORDERS
                         </Typography>
@@ -163,14 +206,11 @@ export default function AdminSummary() {
                         component="p"
                         sx={{fontSize: "2rem", textAlign: "center"}}
                         >
-                            1
+                            {orders.length}
                         </Typography>
                     </Paper>
                 </Grid>
-                
-                
             </Grid>
-
         </Grid>
     </>
   )

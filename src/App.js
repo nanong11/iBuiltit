@@ -15,6 +15,8 @@ import ProductView from "./pages/ProductView";
 import AdminUsers from "./pages/AdminUsers";
 import AdminProducts from "./pages/AdminProducts";
 import AdminSummary from "./pages/AdminSummary";
+import AdminOrderProducts from "./pages/AdminOrderProducts";
+import AdminOrders from "./pages/AdminOrders";
 
 const theme = createTheme({
   palette: {
@@ -44,6 +46,8 @@ function App() {
           <Route path="/admin" element={<AdminSummary/>} />
           <Route path="/admin/users" element={<AdminUsers/>} />
           <Route path="/admin/products" element={<AdminProducts/>} />
+          <Route path="/admin/orderProducts" element={<AdminOrderProducts/>} />
+          <Route path="/admin/orders" element={<AdminOrders/>} />
         </Route>
         <Route element={<WithAppNavBar />}>
           <Route path="/" element={<Home />} />

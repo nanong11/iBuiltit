@@ -5,76 +5,54 @@ import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import AdminDashboard from '../components/AdminDashboard'
 
-export default function AdminProducts() {
+export default function AdminOrderProducts() {
     const token = localStorage.getItem(`token`)
     const user = useSelector(state => state.user.value)
-    const [products, setProducts] = useState([])
+    const [orderProducts, setOrderProducts] = useState([])
     const navigate = useNavigate()
 
     useEffect(() => {
         if(user.isAdmin && token){
-          fetch(`https://mysterious-ocean-63835.herokuapp.com/api/products`, {
+          fetch(`https://mysterious-ocean-63835.herokuapp.com/api/orderProducts`, {
             headers: {"Authorization": `Bearer ${token}`}
           })
           .then(response => response.json())
-          .then(response => setProducts(response))
+          .then(response => setOrderProducts(response))
         }else{
           navigate(`/`)
         }
       }, [user.isAdmin, token, navigate])
 
-    const handleProductEdit = (oldData, newData) => {
-        let productName = oldData.row.productName
-        let description = oldData.row.description
-        let category = oldData.row.category
-        let stock = oldData.row.stock
-        let price = oldData.row.price
-        let isActive = oldData.row.isActive
+    const handleOrderProductEdit = (oldData, newData) => {
+        let quantity = oldData.row.quantity
 
         switch (oldData.field) {
-            case "productName":
-                productName = newData.target.value
-                break;
-            case "description":
-                description = newData.target.value
-                break;
-            case "category":
-                category = newData.target.value
-                break;
-            case "stock":
-                stock = newData.target.value
-                break;
-            case "price":
-                price = newData.target.value
-                break;
-            case "isActive":
-                isActive = newData.target.value
+            case "quantity":
+                quantity = newData.target.value
                 break;
             default:
                 break;
         }
-        fetch(`https://mysterious-ocean-63835.herokuapp.com/api/products/${oldData.id}/update`, {
+        fetch(`https://mysterious-ocean-63835.herokuapp.com/api/orderProducts/${oldData.id}/update`, {
             method: "PUT",
             headers: {
               "Authorization": `Bearer ${token}`,
               "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                productName, description, category, stock, price, isActive
+                quantity
             })
         })
         .then(response => response.json())
-        .then(response => navigate(`/admin/products`))
+        .then(response => navigate(`/admin/orderProducts`))
     }
 
     const columns = [
-      { field: "_id", headerName: "ProductId", width: 150 },
-      { field: "productName", headerName: 'Product Name', width: 300, editable: true },
-      { field: "description", headerName: "Description", width: 400, editable: true },
-      { field: "category", headerName: 'Category', width: 150, editable: true},
-      { field: "stock", headerName: 'Stock', width: 100, editable: true },
-      { field: "price", headerName: 'Price', width: 100, editable: true },
-      { field: "isActive", headerName: 'isActive', width: 100, editable: true },
+      { field: "_id", headerName: "OrderProductId", width: 250 },
+      { field: "productId", headerName: 'ProductId', width: 250 },
+      { field: "price", headerName: 'Price', width: 100, },
+      { field: "quantity", headerName: "Quantity", width: 100, editable: true },
+      { field: "subTotal", headerName: "SubTotal", width: 100 },
       { field: "createdAt", headerName: 'Date Created', width: 200 },
       { field: "updatedAt", headerName: 'Date Updated', width: 200 },
     ];
@@ -100,7 +78,7 @@ export default function AdminProducts() {
                     component="div"
                     sx={{fontSize: "2rem", fontWeight: 700, textAlign: "center", pt: "1rem"}}
                     >
-                        PRODUCTS TABLE
+                        ORDER PRODUCTS TABLE
                     </Typography>
                 </Paper>
             </Grid>
@@ -111,11 +89,11 @@ export default function AdminProducts() {
             >
                 <DataGrid
                 getRowId={(row) => row._id}
-                rows={products}
+                rows={orderProducts}
                 columns={columns}
                 pagination
                 experimentalFeatures={{ newEditingApi: true }}
-                onCellEditStop={(oldData, newData) => handleProductEdit(oldData, newData)}
+                onCellEditStop={(oldData, newData) => handleOrderProductEdit(oldData, newData)}
                 />
             </Grid>
         </Grid>
