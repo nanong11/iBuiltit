@@ -25,6 +25,7 @@ function ShowProductOnScroll(props) {
 }
 
 export default function Products() {
+  const token = localStorage.getItem(`token`)
   const [ products, setProducts ] = useState([])
   const [loading, setLoading] = useState(false)
   const dispatch = useDispatch()
@@ -32,12 +33,12 @@ export default function Products() {
   const navigate = useNavigate()
   
   useEffect(() => {
-    if(user.isAdmin){
+    if(user.isAdmin && token){
       navigate(`/admin`)
     }else{
       navigate(`/products#all`)
     }
-  }, [user.isAdmin, navigate])
+  }, [user.isAdmin, navigate, token])
 
   useEffect(() => {
     fetch(`https://mysterious-ocean-63835.herokuapp.com/api/products/isActive`)

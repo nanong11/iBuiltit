@@ -6,7 +6,6 @@ import { Box } from '@mui/system';
 import { useDispatch, useSelector } from 'react-redux';
 import { setOrderData } from '../redux/orderSlice';
 import CartItemCard from './CartItemCard';
-import { useNavigate } from 'react-router-dom';
 
 const useStyles = makeStyles({
     cart: {
@@ -29,7 +28,6 @@ export default function Cart() {
     const [product, setProduct] = useState()
     const classes = useStyles()
     const dispatch = useDispatch()
-    const navigate = useNavigate()
     
     useEffect(() => {
         let totalPrice = 0;

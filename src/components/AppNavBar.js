@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -9,17 +9,14 @@ import CategoryRoundedIcon from '@mui/icons-material/CategoryRounded';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import Container from '@mui/material/Container';
 import MenuItem from '@mui/material/MenuItem';
-import { Backdrop, Badge, Button, CircularProgress, Dialog, Drawer, Grid, Slide} from '@mui/material';
+import { Backdrop, Badge, Button, CircularProgress, Dialog, Drawer, Slide} from '@mui/material';
 import useScrollTrigger from '@mui/material/useScrollTrigger';
 import Login from '../pages/Login';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import { useSelector, useDispatch } from 'react-redux';
-import { setUserData } from '../redux/userSlice';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { setOrderData } from '../redux/orderSlice';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import Cart from './Cart';
-import { setOrderProductData } from '../redux/orderProductsSlice';
 
 const pages = [
   {
