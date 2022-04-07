@@ -1,9 +1,28 @@
-import { Backdrop, CircularProgress, Grid, Typography } from '@mui/material'
+import { Backdrop, CircularProgress, Grid, Grow, Typography, useScrollTrigger } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import ProductCard from '../components/ProductCard'
 import { useDispatch, useSelector } from 'react-redux'
 import { setProductsData } from '../redux/productSlice'
 import { useNavigate } from 'react-router-dom'
+
+function ShowProductOnScroll(props) {
+  const { children, window } = props
+
+  const onScrollDown = useScrollTrigger({
+    disableHysteresis: true,
+    threshold: 500,
+    target: window ? window() : undefined
+  })
+  
+  return(
+    <Grow
+    in={onScrollDown}
+    {...(onScrollDown ? { timeout: 2000 } : {})}
+    >
+      {children}
+    </Grow>
+  )
+}
 
 export default function Products() {
   const [ products, setProducts ] = useState([])
@@ -48,19 +67,22 @@ export default function Products() {
           All Products
         </Typography>
       </Grid>
-      
-      <Grid
-        container
-        justifyContent="center"
-      > 
-        {products}
-        <Backdrop
-          sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-          open={loading}
-        >
-          <CircularProgress color="primary" />
-        </Backdrop>
-      </Grid>
+      <ShowProductOnScroll>
+        <Grid
+          container
+          justifyContent="center"
+        > 
+          
+            {products}
+            <Backdrop
+              sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+              open={loading}
+            >
+              <CircularProgress color="primary" />
+            </Backdrop>
+          
+        </Grid>
+      </ShowProductOnScroll>
     </>
   )
 }

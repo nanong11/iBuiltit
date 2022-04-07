@@ -6,7 +6,6 @@ import { useNavigate } from "react-router-dom"
 /* Custom Styles */
 const useStyles = makeStyles({
     form: {
-      margin: "10rem auto auto",
       width: "100%",
       padding: "2rem",
       display: "flex",
@@ -239,7 +238,7 @@ export default function Signup() {
       spacing={0}
       alignItems="center"
       justifyContent="center"
-      sx={{minHeight: '100vh'}}
+      sx={{minHeight: "100vh"}}
       >
         <Grid item xs={10} sm={8} md={5} xl={3} className={classes.gridItem}>
           <FormControl
