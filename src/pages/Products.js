@@ -15,6 +15,8 @@ export default function Products() {
   useEffect(() => {
     if(user.isAdmin){
       navigate(`/admin`)
+    }else{
+      navigate(`/products#all`)
     }
   }, [user.isAdmin, navigate])
 

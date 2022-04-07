@@ -117,7 +117,7 @@ export default function ProductCard({productProp}) {
   const handleCloseDialog = () => {
     setOpenLoginDialog(false)
   }
-
+  
   return (
     <Grid item>
       <Card 
@@ -125,7 +125,7 @@ export default function ProductCard({productProp}) {
       >
         <CardMedia
           component="img"
-          image="/img/B450.jpg"
+          src={productImg}
           sx={{ padding: 2}}
         />
         
