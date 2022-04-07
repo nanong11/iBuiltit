@@ -18,6 +18,8 @@ import { useNavigate } from 'react-router-dom';
 import Cart from './Cart';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { setUserData } from '../redux/userSlice';
+import { setOrderProductData } from '../redux/orderProductsSlice';
+import { setOrderData } from '../redux/orderSlice';
 
 const pages = [
     {
@@ -96,6 +98,7 @@ export default function Banner() {
   const token = localStorage.getItem(`token`)
   const classes = useStyles()
   const user = useSelector( (state) => state.user.value)
+  const order = useSelector(state => state.order.value)
   const [cartDrawer, setCartDrawer] = useState(false)
   const [loading, setLoading] = useState(false)
   const orderProducts = useSelector(state=> state.orderProducts.value)
@@ -115,6 +118,73 @@ export default function Banner() {
       })
     }
   }, [token, dispatch])
+
+  useEffect(() => {
+    if(user.isAdmin === false){
+      fetch(`https://mysterious-ocean-63835.herokuapp.com/api/orders`, {
+        headers: {"Authorization": `Bearer ${token}`}
+      })
+      .then(response => response.json())
+      .then(response => {
+        let userOrder = response.map(order => {
+          if(order.userId === user._id && order.complete === false){
+            dispatch(setOrderData(order))
+            setLoading(false)
+            return order
+          }
+        })
+        if(userOrder.length === 0){
+          fetch(`https://mysterious-ocean-63835.herokuapp.com/api/orders/create`, {
+            method: "POST",
+            headers: {
+              "Authorization": `Bearer ${token}`,
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              userId: user._id,
+            })
+          })
+          .then(response => response.json())
+          .then(response => {
+            dispatch(setOrderData(response))
+            setLoading(false)
+          }) 
+        }
+      })
+    }
+  }, [user._id, user.isAdmin, token, dispatch])
+
+  useEffect(() => {
+    if(user.isAdmin === false){
+      fetchOrderProducts()
+    }
+  }, [user.isAdmin])
+
+  const fetchOrderProducts = () =>{
+    fetch(`https://mysterious-ocean-63835.herokuapp.com/api/orderProducts`, {
+      headers: {"Authorization": `Bearer ${token}`}
+    })
+    .then(response => response.json())
+    .then(response => {
+      response.forEach(orderProduct => {
+        if(orderProduct.orderId === order._id){
+          dispatch(setOrderProductData(response))
+          setLoading(false)
+        }
+        if(orderProduct.quantity === 0){
+          fetch(`https://mysterious-ocean-63835.herokuapp.com/api/orderProducts/${orderProduct._id}/delete`, {
+          method: "DELETE",
+          headers: {"Authorization": `Bearer ${token}`}
+          })
+          .then(response => response.json())
+          .then(response => {
+          fetchOrderProducts()
+          })
+        }
+      })
+      dispatch(setOrderProductData(response))
+    })
+  }
 
   const UserLinks = () => {
     const [anchorElUser, setAnchorElUser] = useState(null);
@@ -341,6 +411,10 @@ export default function Banner() {
     navigate("/")
   }
 
+  const handleViewCart = () => {
+    navigate(`/cart#cart`)
+  }
+
   return (
     <Grid
       container
@@ -398,8 +472,20 @@ export default function Banner() {
                 anchor="right"
                 open={cartDrawer}
                 onClose={(e) => toggleCart(e)}
+                PaperProps={{
+                  sx: {
+                    backgroundColor: "#ededed",
+                  }
+                }}
               >
                 <Cart />
+                <Button
+                variant='outlined'
+                onClick={(e) => handleViewCart(e)}
+                sx={{mx: "2rem", mb: "3rem"}}
+                >
+                  View Cart
+                </Button>
               </Drawer>
             </IconButton>
             <Backdrop

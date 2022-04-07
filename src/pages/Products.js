@@ -21,7 +21,6 @@ export default function Products() {
   }, [user.isAdmin, navigate])
 
   useEffect(() => {
-    setLoading(true)
     fetch(`https://mysterious-ocean-63835.herokuapp.com/api/products/isActive`)
     .then(response => response.json())
     .then(response => {

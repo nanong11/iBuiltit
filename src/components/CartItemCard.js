@@ -5,6 +5,7 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { makeStyles } from '@material-ui/styles'
 import { setOrderProductData } from '../redux/orderProductsSlice';
 import { useDispatch, useSelector } from 'react-redux';
+import CancelPresentationOutlinedIcon from '@mui/icons-material/CancelPresentationOutlined';
 
 const useStyles = makeStyles({
     cart: {
@@ -47,12 +48,13 @@ export default function CartItemCard({orderProductProp}) {
               })
               .then(response => response.json())
               .then(response => {
-              fetchOrderProducts()
+                fetchOrderProducts()
               })
             }
           })
+          dispatch(setOrderProductData(response))
         })
-      }
+    }
       
     useEffect(() => {
         fetch(`https://mysterious-ocean-63835.herokuapp.com/api/products/${productId}/`, {
@@ -94,6 +96,17 @@ export default function CartItemCard({orderProductProp}) {
             fetchOrderProducts()
         })
     }
+
+    const handleDeleteCartItem = () => {
+        fetch(`https://mysterious-ocean-63835.herokuapp.com/api/orderProducts/${_id}/delete`, {
+            method: "DELETE",
+            headers: {"Authorization": `Bearer ${token}`}
+            })
+            .then(response => response.json())
+            .then(response => {
+                fetchOrderProducts()
+            })
+    } 
             
   return (
     <Grid
@@ -102,47 +115,61 @@ export default function CartItemCard({orderProductProp}) {
     >
         <Paper
         elevation={0}
-        sx={{padding: 1, flexGrow: 1}}
+        sx={{padding: 1, flexGrow: 1, display: "flex", gap: 1}}
         >
-            <Typography
-            variant='h6'
-            sx={{fontSize: "1.2rem", textAlign: "center"}}
-            >
-                {product.productName}
-            </Typography>
             <Box
-            sx={{display: "flex", px: 5}}
+            sx={{flexGrow: 1}}
             >
-                <Box sx={{flexGrow: 1, display: "flex"}}>
-                    <IconButton
-                    disabled={deductIconIsDisabled}
-                    color='primary'
-                    onClick={(e) => handleDeductQuantity(e)}
-                    >
-                        <RemoveCircleOutlineIcon fontSize="medium" />
-                    </IconButton>
-                    <Typography sx={{m: "auto .5rem", fontSize: "1.3rem"}}>{quantity}</Typography>
-                    <IconButton 
-                    color='primary'
-                    onClick={(e) => handleAddQuantity(e)}
-                    >
-                        <AddCircleOutlineIcon fontSize="medium" />
-                    </IconButton>
+                <Typography
+                variant='h6'
+                sx={{fontSize: "1.2rem", textAlign: "center"}}
+                >
+                    {product.productName}
+                </Typography>
+                <Box
+                sx={{display: "flex", px: 5}}
+                >
+                    <Box sx={{flexGrow: 1, display: "flex"}}>
+                        <IconButton
+                        disabled={deductIconIsDisabled}
+                        color='primary'
+                        onClick={(e) => handleDeductQuantity(e)}
+                        >
+                            <RemoveCircleOutlineIcon fontSize="medium" />
+                        </IconButton>
+                        <Typography sx={{m: "auto .5rem", fontSize: "1.3rem"}}>{quantity}</Typography>
+                        <IconButton 
+                        color='primary'
+                        onClick={(e) => handleAddQuantity(e)}
+                        >
+                            <AddCircleOutlineIcon fontSize="medium" />
+                        </IconButton>
+                    </Box>
+                    <Box>
+                        <Typography
+                        sx={{fontSize: ".8rem"}}
+                        >
+                            {product.price} x {quantity}
+                        </Typography>
+                        
+                        <Typography
+                        variant='h6'
+                        sx={{fontSize: "1rem"}}
+                        >
+                                {subTotal}
+                        </Typography>
+                    </Box>
                 </Box>
-                <Box>
-                    <Typography
-                    sx={{fontSize: ".8rem"}}
-                    >
-                        {product.price} x {quantity}
-                    </Typography>
-                    
-                    <Typography
-                    variant='h6'
-                    sx={{fontSize: "1rem"}}
-                    >
-                            {subTotal}
-                    </Typography>
                 </Box>
+            <Box
+            sx={{display: "flex", alignItems: "center"}}
+            >
+                <IconButton
+                color="primary"
+                onClick={(e) => handleDeleteCartItem(e)}
+                >
+                    <CancelPresentationOutlinedIcon fontSize='medium'/>
+                </IconButton>
             </Box>
         </Paper>
     </Grid>

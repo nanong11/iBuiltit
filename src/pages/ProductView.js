@@ -51,12 +51,12 @@ export default function ProductView() {
               })
             }
           })
+          dispatch(setOrderProductData(response))
         })
     }
 
     useEffect(() =>{
         if(productId){
-            setLoading(true)
             fetch(`https://mysterious-ocean-63835.herokuapp.com/api/products/${productId}`, {
                 method: "POST",
                 headers: {"Authorization": `Bearer ${token}`}
@@ -97,7 +97,7 @@ export default function ProductView() {
                 })        
             }else if(orderProductIdArr.indexOf(productId) === -1){
               setLoading(true)
-              fetch(`/api/orderProducts/create`, {
+              fetch(`https://mysterious-ocean-63835.herokuapp.com/api/orderProducts/create`, {
                 method: "POST",
                 headers: {
                   "Authorization": `Bearer ${token}`,
@@ -135,7 +135,7 @@ export default function ProductView() {
 
     const handleCloseDialog = () => {
         setOpenLoginDialog(false)
-      }
+    }
 
     useEffect(() => {
       if(quantity > 0){
@@ -236,7 +236,6 @@ export default function ProductView() {
                         Add to cart
                     </Button>
                     </>
-
                 }
             </Box>
         </Grid>
@@ -251,9 +250,9 @@ export default function ProductView() {
         maxWidth="sm"
         open={openLoginDialog}
         onClose={(e) => handleCloseDialog(e)}
-      >
-        <Login />
-      </Dialog>
+        >
+          <Login />
+        </Dialog>
     </Grid>
   )
 }

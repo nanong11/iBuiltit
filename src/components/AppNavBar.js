@@ -9,7 +9,7 @@ import CategoryRoundedIcon from '@mui/icons-material/CategoryRounded';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import Container from '@mui/material/Container';
 import MenuItem from '@mui/material/MenuItem';
-import { Backdrop, Badge, Button, CircularProgress, Dialog, Drawer, Slide} from '@mui/material';
+import { Backdrop, Badge, Button, CircularProgress, Dialog, Drawer, Grid, Slide} from '@mui/material';
 import useScrollTrigger from '@mui/material/useScrollTrigger';
 import Login from '../pages/Login';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
@@ -98,87 +98,8 @@ export default function AppNavBar(props) {
   const orderProducts = useSelector(state=> state.orderProducts.value)
   const [loading, setLoading] = useState(false)
   const [cartDrawer, setCartDrawer] = useState(false)
-  const dispatch = useDispatch()
   const navigate = useNavigate()
-  const order = useSelector(state => state.order.value)
-
-  useEffect(() => {
-    if(user.isAdmin === false){
-      fetch(`https://mysterious-ocean-63835.herokuapp.com/api/orderProducts`, {
-        headers: {"Authorization": `Bearer ${token}`}
-      })
-      .then(response => response.json())
-      .then(response => {
-        response.forEach(orderProduct => {
-          if(orderProduct.orderId === order._id){
-            dispatch(setOrderProductData(response))
-            setLoading(false)
-          }
-          if(orderProduct.quantity === 0){
-            fetch(`https://mysterious-ocean-63835.herokuapp.com/api/orderProducts/${orderProduct._id}/delete`, {
-            method: "DELETE",
-            headers: {"Authorization": `Bearer ${token}`}
-            })
-            .then(response => response.json())
-            .then(response => {
-              setLoading(false)
-            })
-          }
-        })
-      })
-    }
-  }, [loading, token, dispatch, order._id, user.isAdmin])
-
-  useEffect(() => {
-    if(token){
-      setLoading(true)
-      fetch(`https://mysterious-ocean-63835.herokuapp.com/api/users/profile`, {
-        headers: {"Authorization": `Bearer ${token}`}
-      })
-      .then(response => response.json())
-      .then(response => {
-        dispatch(setUserData(response))
-        setLoading(false)
-      })
-    }
-  }, [token, dispatch])
-
-  useEffect(() => {
-    if(user.isAdmin === false){
-      setLoading(true)
-      fetch(`https://mysterious-ocean-63835.herokuapp.com/api/orders`, {
-        headers: {"Authorization": `Bearer ${token}`}
-      })
-      .then(response => response.json())
-      .then(response => {
-        let userOrder = response.map(order => {
-          if(order.userId === user._id && order.complete === false){
-            dispatch(setOrderData(order))
-            setLoading(false)
-            return order
-          }
-        })
-        if(userOrder.length === 0){
-          fetch(`/api/orders/create`, {
-            method: "POST",
-            headers: {
-              "Authorization": `Bearer ${token}`,
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-              userId: user._id,
-            })
-          })
-          .then(response => response.json())
-          .then(response => {
-            dispatch(setOrderData(response))
-            setLoading(false)
-          }) 
-        }
-      })
-    }
-  }, [user._id, user.isAdmin, token, dispatch])
-
+  
   const UserLinks = () => {
     const [anchorElUser, setAnchorElUser] = useState(null);
     const [openLoginDialog, setOpenLoginDialog] = useState(false);
@@ -402,6 +323,11 @@ export default function AppNavBar(props) {
   const handleLogoClick = () => {
     navigate("/")
   }
+
+  const handleViewCart = () => {
+    navigate(`/cart`)
+  }
+
   return(
     <ShowAppBarOnScroll {...props}>
       <AppBar>
@@ -448,8 +374,21 @@ export default function AppNavBar(props) {
                   keepMounted: true
                 }}
                 open={cartDrawer}
+                PaperProps={{
+                  sx: {
+                    backgroundColor: "#ededed",
+                  }
+                }}
               >
                 <Cart />
+                <Button
+                variant='outlined'
+                onClick={(e) => handleViewCart(e)}
+                sx={{mx: "2rem", mb: "3rem"}}
+                >
+                  View Cart
+                </Button>
+                
               </Drawer>
             </IconButton>
             <Backdrop

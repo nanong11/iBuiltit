@@ -6,18 +6,17 @@ import { Box } from '@mui/system';
 import { useDispatch, useSelector } from 'react-redux';
 import { setOrderData } from '../redux/orderSlice';
 import CartItemCard from './CartItemCard';
+import { useNavigate } from 'react-router-dom';
 
 const useStyles = makeStyles({
     cart: {
         display: "flex",
         flexDirection: "column",
-        width: 400,
+        gap: "1rem",
+        width: "100%",
+        height: "100%",
         padding: "1rem", 
-        backgroundColor: "#edededce"
-    },
-    cartItem: {
-        display: "flex",
-        justifyContent: "space-between"
+        backgroundColor: "#ededed"
     }
 })
 
@@ -30,7 +29,8 @@ export default function Cart() {
     const [product, setProduct] = useState()
     const classes = useStyles()
     const dispatch = useDispatch()
-
+    const navigate = useNavigate()
+    
     useEffect(() => {
         let totalPrice = 0;
         orderProducts.forEach(orderProduct => {
@@ -65,7 +65,7 @@ export default function Cart() {
             return <CartItemCard key={orderProduct._id} orderProductProp={orderProduct} />
         }))
     }, [orderProducts])
-    
+
   return (
     <Grid
     container
@@ -73,7 +73,7 @@ export default function Cart() {
     >
         <Grid
         item
-        sx={{display: "flex", gap: 1, justifyContent: "center", my: 2}}
+        sx={{display: "flex", gap: 1, justifyContent: "center"}}
         >
             <ShoppingCartIcon color='primary' fontSize='large'/>
             <Typography
@@ -84,7 +84,7 @@ export default function Cart() {
         </Grid>
         
         <Box
-        sx={{display: "flex", flexDirection: "column", gap: 1}}
+        sx={{display: "flex", flexDirection: "column", gap: 1, flexGrow: 1}}
         >
             {product}
         </Box>
@@ -101,7 +101,6 @@ export default function Cart() {
                     <CircularProgress color="primary" />
                 </Backdrop>
             </Button>
-            <Button variant='outlined'>View Cart</Button>
         </Box>
     </Grid>
   )

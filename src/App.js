@@ -17,6 +17,7 @@ import AdminProducts from "./pages/AdminProducts";
 import AdminSummary from "./pages/AdminSummary";
 import AdminOrderProducts from "./pages/AdminOrderProducts";
 import AdminOrders from "./pages/AdminOrders";
+import CartView from "./pages/CartView";
 
 const theme = createTheme({
   palette: {
@@ -54,6 +55,7 @@ function App() {
           <Route exact path="/products" element={<Products />} />
           <Route path="/logout" element={<Logout />} />
           <Route path=":productId" element={<ProductView />} />
+          <Route path="/cart" element={<CartView />} />
         </Route>
       </Routes>
     </BrowserRouter>

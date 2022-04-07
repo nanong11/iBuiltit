@@ -40,6 +40,7 @@ export default function ProductCard({productProp}) {
           })
         }
       })
+      dispatch(setOrderProductData(response))
     })
   }
 
