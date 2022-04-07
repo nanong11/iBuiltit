@@ -21,7 +21,7 @@ const imgData = [
     title: "rog-strix-3090-white"
   },
   {
-    img: "./img/tridentz.jpg",
+    img: "./img/tridentZ.jpg",
     title: "tridentz"
   },
   {
