@@ -164,7 +164,7 @@ export default function Login() {
                Welcome to iBuiltit
             </Typography>
             <Typography
-              variant="p"
+              variant="body1"
               component="p"
               align='center'
             >
@@ -210,7 +210,7 @@ export default function Login() {
             </Button>
 
             <Typography
-              variant="p"
+              variant="body1"
               component="p"
               align='center'
             >

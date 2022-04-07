@@ -46,13 +46,9 @@ export default function Footer() {
                 })
                 .then(response => response.json())
                 .then(userData => {
-                  if(userData.isAdmin === false){
                     dispatch(setUserData(userData))
-                    navigate(`/`)
-                  }else if(userData.isAdmin === true){
-                    dispatch(setUserData(userData))
+                    alert(`Admin access granted.`)
                     navigate(`/admin`)
-                  }
                 })
             }
         })
@@ -63,16 +59,19 @@ export default function Footer() {
     sx={{backgroundColor: "#232629", height: "auto"}}
     >
         <Grid
-        item
+        container
         xs={12}
-        sx={{display: "flex", p: "1rem 3rem", justifyContent: "space-evenly"}}
+        sx={{p: "1rem 3rem", mx: "auto", gap: "2rem", justifyContent: "space-evenly"}}
         >
-            <Box
+            <Grid
+            item
+            xs={12}
+            lg={1.5}
             >
                 <Typography
                 variant="h3"
                 component="a"
-                sx={{ m: "auto", textDecoration: "none", cursor: "pointer", color: "#edededce"}}
+                sx={{textDecoration: "none", cursor: "pointer", color: "#edededce", }}
                 onClick={(e) => handleClickLogo(e)}
                 >
                     iBuiltit
@@ -84,9 +83,10 @@ export default function Footer() {
                 >
                     Build you dream PC.
                 </Typography>
-            </Box>
-            <Box
-            sx={{width: "40%"}}
+            </Grid>
+            <Grid
+            xs={12}
+            lg={7}
             >
                 <Typography
                 variant="h5"
@@ -116,8 +116,10 @@ export default function Footer() {
                 >
                     *Click my name on the right to access admin features.
                 </Typography>
-            </Box>
-            <Box
+            </Grid>
+            <Grid
+            xs={12}
+            lg={2}
             sx={{display: "flex", flexDirection: "column"}}
             >
                 <Box
@@ -142,13 +144,13 @@ export default function Footer() {
                 <Typography
                 variant="h3"
                 component="a"
-                sx={{fontSize: "1.5rem", textDecoration: "none", cursor: "pointer", color: "#edededce"}}
+                sx={{fontSize: "1.5rem", textDecoration: "none", cursor: "pointer", color: "#edededce", textAlign: "center"}}
                 onClick={(e) => handleSecretPass(e)}
                 >
                     Marc Allen Nanong | 2022
                 </Typography>
                 
-            </Box>
+            </Grid>
         </Grid>
     </Grid>
   )

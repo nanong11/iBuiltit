@@ -72,11 +72,10 @@ export default function Home() {
 
             <Grid
             item
-            sx={{ minHeight: '100vh' }}
+            sx={{p: "1rem" }}
+            xs={12}
             >
-              
                 <ImageList 
-                sx={{ width: "115rem", height: "100%", mx: "auto" }} 
                 cols={3}
                 >
                   {imgData.map((item) => (
@@ -96,7 +95,6 @@ export default function Home() {
                     </ShowImageOnScroll>
                   ))}
                 </ImageList>
-              
             </Grid>
       </Grid>
     </>

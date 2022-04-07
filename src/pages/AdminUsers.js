@@ -1,15 +1,19 @@
-import { Grid, Paper, Typography } from '@mui/material';
+import { Grid, IconButton, Paper, Snackbar, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react'
 import AdminDashboard from '../components/AdminDashboard'
 import { DataGrid } from '@mui/x-data-grid';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import CloseIcon from '@mui/icons-material/Close';
 
 export default function AdminUsers() {
   const token = localStorage.getItem(`token`)
   const [users, setUsers] = useState([])
   const user = useSelector(state => state.user.value)
   const navigate = useNavigate()
+
+  const [snackbarNotif, setSnackbarNotif] = useState(false)
+  const [snackbarMessage, setSnackbarMessage] = useState("")
 
   useEffect(() => {
     if(user.isAdmin && token){
@@ -48,10 +52,16 @@ export default function AdminUsers() {
       body: JSON.stringify({
         firstName, lastName, isAdmin, email
       })
-    })
-    .then(response => response.json())
-    .then(response => navigate(`/admin/users`))
-  } 
+      })
+      .then(response => response.json())
+      .then(response => {
+        if(response){
+          setSnackbarMessage("User data updated")
+          setSnackbarNotif(true)
+          navigate(`/admin/users`)
+        }
+      })
+    } 
 
   const columns = [
     { field: '_id', headerName: 'UserId', width: 150 },
@@ -63,6 +73,26 @@ export default function AdminUsers() {
     { field: "updatedAt", headerName: 'Date Updated', width: 200 },
     { field: "lastLoginDate", headerName: 'Last Login', width: 200 },
   ];
+
+  const handleCloseSnackbarNotif = (event, reason) => {
+    if(reason === 'clickaway'){
+      return;
+    }
+    setSnackbarNotif(false)
+  }
+
+  const saveSnackbarNotifAction = (
+    <>
+      <IconButton
+      size="small"
+      aria-label="close"
+      color="inherit"
+      onClick={(e) => handleCloseSnackbarNotif(e)}
+      >
+        <CloseIcon fontSize="small" />
+      </IconButton>
+    </>
+  )
 
   return (
     <>
@@ -102,6 +132,13 @@ export default function AdminUsers() {
               />
             </Grid>
         </Grid>
+        <Snackbar
+          open={snackbarNotif}
+          autoHideDuration={6000}
+          onClose={(event, reason) => handleCloseSnackbarNotif(event, reason)}
+          message={snackbarMessage}
+          action={saveSnackbarNotifAction}
+        />
     </>
   )
 }
