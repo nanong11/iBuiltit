@@ -101,6 +101,7 @@ export default function Banner() {
   const order = useSelector(state => state.order.value)
   const [cartDrawer, setCartDrawer] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [noUserOrder, setNoUserOrder] = useState(false)
   const orderProducts = useSelector(state=> state.orderProducts.value)
   const navigate = useNavigate()
   const dispatch = useDispatch()
@@ -126,7 +127,7 @@ export default function Banner() {
       })
       .then(response => response.json())
       .then(response => {
-        let userOrder = response.map(order => {
+        let userOrder = response.filter(order => {
           if(order.userId === user._id && order.complete === false){
             dispatch(setOrderData(order))
             setLoading(false)
@@ -134,6 +135,9 @@ export default function Banner() {
           }
         })
         if(userOrder.length === 0){
+          setNoUserOrder(true)
+        }
+        if(noUserOrder){
           fetch(`https://mysterious-ocean-63835.herokuapp.com/api/orders/create`, {
             method: "POST",
             headers: {
@@ -152,7 +156,7 @@ export default function Banner() {
         }
       })
     }
-  }, [user._id, user.isAdmin, token, dispatch])
+  }, [user._id, user.isAdmin, token, dispatch, noUserOrder])
 
   useEffect(() => {
     if(user.isAdmin === false){
@@ -166,23 +170,24 @@ export default function Banner() {
     })
     .then(response => response.json())
     .then(response => {
-      response.forEach(orderProduct => {
+      let userOrderProducts = response.filter(orderProduct => {
         if(orderProduct.orderId === order._id){
-          dispatch(setOrderProductData(response))
-          setLoading(false)
-        }
-        if(orderProduct.quantity === 0){
-          fetch(`https://mysterious-ocean-63835.herokuapp.com/api/orderProducts/${orderProduct._id}/delete`, {
-          method: "DELETE",
-          headers: {"Authorization": `Bearer ${token}`}
-          })
-          .then(response => response.json())
-          .then(response => {
-          fetchOrderProducts()
-          })
+          if(orderProduct.quantity === 0){
+            fetch(`https://mysterious-ocean-63835.herokuapp.com/api/orderProducts/${orderProduct._id}/delete`, {
+            method: "DELETE",
+            headers: {"Authorization": `Bearer ${token}`}
+            })
+            .then(response => response.json())
+            .then(response => {
+              fetchOrderProducts()
+              setLoading(false)
+            })
+          }
+          return orderProduct
         }
       })
-      dispatch(setOrderProductData(response))
+      dispatch(setOrderProductData(userOrderProducts))
+      setLoading(false)
     })
   }
 

@@ -3,6 +3,8 @@ import React, { useEffect, useState } from 'react'
 import { makeStyles } from '@material-ui/styles'
 import { useNavigate } from "react-router-dom"
 import Footer from '../components/Footer'
+import { useDispatch } from 'react-redux'
+import { setUserData } from '../redux/userSlice';
 
 /* Custom Styles */
 const useStyles = makeStyles({
@@ -22,6 +24,7 @@ const useStyles = makeStyles({
 })
 
 export default function Signup() {
+    const dispatch = useDispatch()
     const navigate = useNavigate()
     const classes = useStyles()
 
@@ -223,7 +226,42 @@ export default function Signup() {
       .then(response => {
         if(response){
           alert(`Creating account successful.`)
-          navigate(`/`)
+          fetch(`https://mysterious-ocean-63835.herokuapp.com/api/users/login`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                email, password
+            })
+          })
+          .then(response => response.json())
+          .then(response => {
+            if(response.token !== undefined){
+              localStorage.setItem(`token`, response.token)
+              const {token} = response
+
+              fetch(`https://mysterious-ocean-63835.herokuapp.com/api/users/profile`, {
+                method: "GET",
+                headers: {
+                  "Authorization": `Bearer ${token}`
+                }
+              })
+              .then(response => response.json())
+              .then(userData => {
+                if(userData.isAdmin === false){
+                  dispatch(setUserData(userData))
+                  navigate(`/`)
+                }else if(userData.isAdmin === true){
+                  dispatch(setUserData(userData))
+                  navigate(`/admin`)
+                }
+              })
+            }else{
+              setPasswordError(true)
+              setPasswordErrorText("Invalid password")
+            }
+        })
         }else{
           alert(`Please try again.`)
           navigate(`/signup`)
@@ -235,10 +273,9 @@ export default function Signup() {
     <>
       <Grid 
       container
-      spacing={0}
       alignItems="center"
       justifyContent="center"
-      sx={{minHeight: "100vh"}}
+      sx={{minHeight: "100vh", mt: "4rem"}}
       >
         <Grid item xs={10} sm={8} md={5} xl={3} className={classes.gridItem}>
           <FormControl

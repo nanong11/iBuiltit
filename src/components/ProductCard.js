@@ -24,26 +24,28 @@ export default function ProductCard({productProp}) {
     })
     .then(response => response.json())
     .then(response => {
-      response.forEach(orderProduct => {
+      let userOrderProducts = response.filter(orderProduct => {
         if(orderProduct.orderId === order._id){
-          dispatch(setOrderProductData(response))
-          setLoading(false)
+          if(orderProduct.quantity === 0){
+            fetch(`https://mysterious-ocean-63835.herokuapp.com/api/orderProducts/${orderProduct._id}/delete`, {
+            method: "DELETE",
+            headers: {"Authorization": `Bearer ${token}`}
+            })
+            .then(response => response.json())
+            .then(response => {
+              fetchOrderProducts()
+              setLoading(false)
+            })
+          }
+          return orderProduct
         }
-        if(orderProduct.quantity === 0){
-          fetch(`https://mysterious-ocean-63835.herokuapp.com/api/orderProducts/${orderProduct._id}/delete`, {
-          method: "DELETE",
-          headers: {"Authorization": `Bearer ${token}`}
-          })
-          .then(response => response.json())
-          .then(response => {
-          fetchOrderProducts()
-          })
-        }
+        
       })
-      dispatch(setOrderProductData(response))
+      dispatch(setOrderProductData(userOrderProducts))
+      setLoading(false)
     })
   }
-
+  
   useEffect(() => {
     let itemQuantity = 0;
     let orderProductIdArr = []

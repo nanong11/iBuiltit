@@ -12,7 +12,6 @@ export default function Footer() {
     const navigate = useNavigate()
     const dispatch = useDispatch()
     
-
     const handleClickLogo = () => {
         if(user.isAdmin){
           navigate(`/admin`)
@@ -53,6 +52,7 @@ export default function Footer() {
             }
         })
     }
+    
   return (
     <Grid
     container
@@ -116,7 +116,7 @@ export default function Footer() {
                 component="p"
                 sx={{color: "#edededce"}}
                 >
-                    *Click my name on the right to access admin features.
+                    *Click on my name to access admin features.
                 </Typography>
             </Grid>
             <Grid

@@ -35,10 +35,10 @@ export default function Cart() {
           totalPrice += orderProduct.subTotal
         })
         setTotalPrice(totalPrice)
-      }, [orderProducts])
+    }, [orderProducts])
     
     useEffect(() => {
-        if(order._id){
+        if(totalPrice){
             setLoading(true)
             fetch(`https://mysterious-ocean-63835.herokuapp.com/api/orders/${order._id}/update`, {
                 method: "PUT",
