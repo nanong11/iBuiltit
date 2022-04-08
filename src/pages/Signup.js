@@ -106,7 +106,7 @@ export default function Signup() {
       if(email.length > 0 && validateEmail(email)){
         setEmailErrorText("")
         setEmailColor("")
-        fetch(`/api/users/check-email`, {
+        fetch(`https://mysterious-ocean-63835.herokuapp.com/api/users/check-email`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json"
