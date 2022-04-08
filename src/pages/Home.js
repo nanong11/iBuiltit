@@ -79,9 +79,11 @@ export default function Home() {
                 cols={3}
                 >
                   {imgData.map((item) => (
-                    <ShowImageOnScroll>
+                    <ShowImageOnScroll
+                    key={item.title}
+                    >
                       <ImageListItem
-                      key={item.img}
+                      key={item.title}
                       sx={{p: 2, display: "flex", justifyContent: "center", alignItems: "center"}}
                       >
                         <img

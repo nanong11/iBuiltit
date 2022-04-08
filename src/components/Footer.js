@@ -59,6 +59,7 @@ export default function Footer() {
     sx={{backgroundColor: "#232629", height: "auto"}}
     >
         <Grid
+        item
         container
         xs={12}
         sx={{p: "1rem 3rem", mx: "auto", gap: "2rem", justifyContent: "space-evenly"}}
@@ -81,10 +82,11 @@ export default function Footer() {
                 component="p"
                 sx={{color: "#edededce"}}
                 >
-                    Build you dream PC.
+                    Build your dream PC.
                 </Typography>
             </Grid>
             <Grid
+            item
             xs={12}
             lg={7}
             >
@@ -118,6 +120,7 @@ export default function Footer() {
                 </Typography>
             </Grid>
             <Grid
+            item
             xs={12}
             lg={2}
             sx={{display: "flex", flexDirection: "column"}}
