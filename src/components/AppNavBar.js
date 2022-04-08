@@ -243,7 +243,7 @@ export default function AppNavBar(props) {
           color="secondary"
         >
           <CategoryRoundedIcon />
-          <Typography sx={{ ml: 1, textTransform: 'none' }}>
+          <Typography sx={{ ml: 1, textTransform: 'none', display: {xs: "none", md: "block"} }}>
               Categories
           </Typography>
           <ArrowForwardIosIcon sx={{ ml: 1, fontSize: 15, transition: "all 0.5s ease", transform: `rotate(${arrowTurn})` }} />
